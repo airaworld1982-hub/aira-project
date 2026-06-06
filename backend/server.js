@@ -25,7 +25,13 @@ app.use(helmet({ contentSecurityPolicy: false }));  // CSP managed by frontend
 
 const allowedOrigins = (process.env.FRONTEND_URL || '')
   .split(',').map(s => s.trim()).filter(Boolean);
-allowedOrigins.push('http://localhost:3000', 'http://localhost:5500', 'http://127.0.0.1:5500');
+allowedOrigins.push(
+  'http://localhost:3000',
+  'http://localhost:5500', 
+  'http://127.0.0.1:5500',
+  'https://www.airaworld.org',
+  'https://airaworld.org'
+);
 
 app.use(cors({
   origin: (origin, cb) => {

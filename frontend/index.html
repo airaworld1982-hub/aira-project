@@ -5332,3 +5332,24 @@ document.addEventListener('DOMContentLoaded', loadLiveStats);
 
 </body>
 </html>
+<script>
+function saveZoomLink() {
+  const link = document.getElementById('conf-zoom-input')?.value?.trim();
+  if (!link) { document.getElementById('conf-zoom-status').textContent = '⚠ Please enter a valid link'; return; }
+  const s = getStore(); s.zoomLink = link; saveStore(s);
+  const wrap = document.getElementById('conf-zoom-link-wrap');
+  const btn = document.getElementById('conf-zoom-link-btn');
+  if (wrap) wrap.style.display = 'block';
+  if (btn) btn.href = link;
+  document.getElementById('conf-zoom-status').textContent = '✅ Link saved!';
+  showToast('🔗 Meeting link saved!');
+}
+function clearZoomLink() {
+  const s = getStore(); s.zoomLink = ''; saveStore(s);
+  const wrap = document.getElementById('conf-zoom-link-wrap');
+  if (wrap) wrap.style.display = 'none';
+  const input = document.getElementById('conf-zoom-input');
+  if (input) input.value = '';
+  document.getElementById('conf-zoom-status').textContent = '🗑 Link cleared.';
+}
+</script>

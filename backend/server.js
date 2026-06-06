@@ -20,26 +20,22 @@ connectDB();
 
 const app = express();
 
+// ── Trust Proxy (required for Vercel) ──────────
+app.set('trust proxy', 1);
+
 // ── Security & Middleware ──────────────────────
-app.use(helmet({ contentSecurityPolicy: false }));  // CSP managed by frontend
+app.use(helmet({ contentSecurityPolicy: false }));
 
-const allowedOrigins = (process.env.FRONTEND_URL || '')
-  .split(',').map(s => s.trim()).filter(Boolean);
-allowedOrigins.push(
-  'http://localhost:3000',
-  'http://localhost:5500', 
-  'http://127.0.0.1:5500',
-  'https://www.airaworld.org',
-  'https://airaworld.org'
-);
-
-app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error('CORS: origin not allowed — ' + origin));
-  },
-  credentials: true,
-}));
+// Allow all origins — fix for Vercel deployment
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
 
 app.use(express.json({ limit: '20mb' }));   // 20MB for base64 team photos
 app.use(express.urlencoded({ extended: true }));

@@ -5352,3 +5352,19 @@ function clearZoomLink() {
   document.getElementById('conf-zoom-status').textContent = '🗑 Link cleared.';
 }
 </script>
+<script>
+// Fix: open gate for classroom and conference navigation
+const _origGo2 = go;
+go = function(page, sub) {
+  const result = _origGo2(page, sub);
+  if(page === 'digitalclass' && sub === 'classroom') {
+    const authed = sessionStorage.getItem('aira_authed_classroom');
+    if(!authed) setTimeout(() => openSessionGate('classroom'), 300);
+  }
+  if(page === 'digitalclass' && sub === 'conference') {
+    const authed = sessionStorage.getItem('aira_authed_conference');
+    if(!authed) setTimeout(() => openSessionGate('conference'), 300);
+  }
+  return result;
+};
+</script>

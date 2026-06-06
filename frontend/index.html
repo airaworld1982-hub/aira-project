@@ -2000,8 +2000,8 @@ function bgSync() {
   pull('/media',         'media',         () => renderGal());
   pull('/team',          'team',          () => renderPublicTeam('all'));
   pull('/services',      'services',      () => renderPublicServices());
-  // Sync credentials for logged-in admin
-  if(_token) pull('/credentials', 'credentials', () => renderCredentialTables());
+  // Sync credentials for gate verification (public endpoint handles auth)
+  pull('/credentials', 'credentials', () => { if(_token) renderCredentialTables(); });
   apiCall('GET', '/about').then(r => {
     if (r && r.success && r.data) {
       const s = getStore(); s.about = r.data; saveStore(s);
@@ -5331,63 +5331,6 @@ document.addEventListener('DOMContentLoaded', loadLiveStats);
 
 </body>
 </html>
-<script>
-function saveZoomLink() {
-  const link = document.getElementById('conf-zoom-input')?.value?.trim();
-  if (!link) { document.getElementById('conf-zoom-status').textContent = '⚠ Please enter a valid link'; return; }
-  const s = getStore(); s.zoomLink = link; saveStore(s);
-  const wrap = document.getElementById('conf-zoom-link-wrap');
-  const btn = document.getElementById('conf-zoom-link-btn');
-  if (wrap) wrap.style.display = 'block';
-  if (btn) btn.href = link;
-  document.getElementById('conf-zoom-status').textContent = '✅ Link saved!';
-  showToast('🔗 Meeting link saved!');
-}
-function clearZoomLink() {
-  const s = getStore(); s.zoomLink = ''; saveStore(s);
-  const wrap = document.getElementById('conf-zoom-link-wrap');
-  if (wrap) wrap.style.display = 'none';
-  const input = document.getElementById('conf-zoom-input');
-  if (input) input.value = '';
-  document.getElementById('conf-zoom-status').textContent = '🗑 Link cleared.';
-}
-</script>
-<script>
-// Fix: open gate for classroom and conference navigation
-const _origGo2 = go;
-go = function(page, sub) {
-  const result = _origGo2(page, sub);
-  if(page === 'digitalclass' && sub === 'classroom') {
-    const authed = sessionStorage.getItem('aira_authed_classroom');
-    if(!authed) setTimeout(() => openSessionGate('classroom'), 300);
-  }
-  if(page === 'digitalclass' && sub === 'conference') {
-    const authed = sessionStorage.getItem('aira_authed_conference');
-    if(!authed) setTimeout(() => openSessionGate('conference'), 300);
-  }
-  return result;
-};
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const _og = window.go;
-  window.go = function(page, sub) {
-    const result = _og(page, sub);
-    if(page === 'digitalclass') {
-      if(sub === 'classroom') {
-        const a = sessionStorage.getItem('aira_authed_classroom');
-        if(!a) setTimeout(function(){ if(window.openSessionGate) window.openSessionGate('classroom'); }, 400);
-      }
-      if(sub === 'conference') {
-        const a = sessionStorage.getItem('aira_authed_conference');
-        if(!a) setTimeout(function(){ if(window.openSessionGate) window.openSessionGate('conference'); }, 400);
-      }
-      if(sub === 'recordings') {
-        const a = sessionStorage.getItem('aira_authed_recordings');
-        if(!a) setTimeout(function(){ if(window.openSessionGate) window.openSessionGate('recordings'); }, 400);
-      }
-    }
-    return result;
-  };
-});
-</script>
+
+
+

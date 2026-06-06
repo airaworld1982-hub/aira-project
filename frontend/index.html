@@ -1943,7 +1943,7 @@ const STORE_KEY      = 'aira_cms_v1';
 const ADMIN_USER_ID  = 'admin';
 // Password check: stored as SHA-256-like hash string to avoid plain-text in source.
 // Default fallback password: aira2025  — CHANGE via backend auth in production.
-const ADMIN_PW_HASH  = btoa('aira2020@@');
+const ADMIN_PW_HASH  = btoa('aira2025');
 
 let adminLoggedIn = false;
 let adminModeOn   = false;
@@ -1984,7 +1984,11 @@ function apiCall(method, path, body) {
 function bgSync() {
   const pull = (path, key, renderFn) => {
     apiCall('GET', path).then(r => {
-      if (r && r.success && r.data) {
+      if (r && r.success && Array.isArray(r.data)) {
+        // Always overwrite localStorage with fresh MongoDB data
+        const s = getStore(); s[key] = r.data; saveStore(s);
+        if (renderFn) renderFn();
+      } else if (r && r.success && r.data) {
         const s = getStore(); s[key] = r.data; saveStore(s);
         if (renderFn) renderFn();
       }
@@ -2221,7 +2225,17 @@ function saveTeamMember() {
   store.activity.unshift({ id:Date.now(), label:(editId?'Updated':'Added')+' member: '+name, date:dateStr(), type:'team' });
   saveStore(store);
   if(editId) apiCall('PUT', '/team/'+editId, member);
-  else apiCall('POST', '/team', member);
+  else apiCall('POST', '/team', member).then(r => {
+    if(r && r.success && r.data) {
+      // Refresh from API to get MongoDB _id
+      apiCall('GET', '/team').then(res => {
+        if(res && res.success) {
+          const s = getStore(); s.team = res.data; saveStore(s);
+          renderAdminTeamList(); renderPublicTeam('all');
+        }
+      });
+    }
+  });
   clearTeamForm();
   renderAdminTeamList();
   renderPublicTeam('all');
@@ -3839,6 +3853,11 @@ function animateCounters() {
 
 // ── DOM READY ─────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Clear stale content from localStorage so API data always wins
+  const s = getStore();
+  s.team = []; s.blogs = []; s.projects = [];
+  s.announcements = []; s.media = []; s.services = [];
+  saveStore(s);
   // Admin login link is inside the About panel (see #about-admin-link)
   // Render public sections from saved data
   renderPublicTeam('all');
@@ -3859,7 +3878,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if(pe) pe.style.display = store.projects.filter(p=>p.pstatus==='current').length ? 'none' : 'block';
   if(be) be.style.display = store.blogs.filter(p=>p.status!=='draft').length ? 'none' : 'block';
   // Pull fresh data from backend after page is visible — never blocks load
-  bgSync(); setInterval(bgSync, 30000);
+  bgSync();
+  setInterval(bgSync, 30000);
 });
 
 

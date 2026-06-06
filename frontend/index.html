@@ -2104,7 +2104,7 @@ function adminLogin() {
   apiCall('POST', '/auth/login', { username: u, password: pw }).then(r => {
     const ok = r && r.success && r.token;
     if (ok) { _token = r.token; sessionStorage.setItem('aira_admin_token', _token); }
-    if (ok cd ~/Desktop/aira-project
+    if (ok 
 git add .
 git commit -m "Fix: remove localStorage admin password fallback"
  {

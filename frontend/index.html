@@ -2068,7 +2068,9 @@ function go(page, sub) {
   if(page === 'blogs')         renderPublicBlogs();
   if(page === 'announcements') renderAnn(sub||'all');
   if(page === 'gallery')       renderGal('all');
-  // Gate recordings access when navigated directly
+  // Gate all digital class sections when navigated directly
+  if(page === 'digitalclass' && sub === 'classroom') { const a=sessionStorage.getItem('aira_authed_classroom'); if(!a) setTimeout(()=>openSessionGate('classroom'),300); }
+  if(page === 'digitalclass' && sub === 'conference') { const a=sessionStorage.getItem('aira_authed_conference'); if(!a) setTimeout(()=>openSessionGate('conference'),300); }
   if(page === 'digitalclass' && sub === 'recordings') {
     const authed = sessionStorage.getItem('aira_authed_recordings');
     if(!authed) setTimeout(() => openSessionGate('recordings'), 200);

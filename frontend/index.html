@@ -2468,7 +2468,7 @@ function createCredential() {
   clearCredForm();
   renderCredentialTables();
   updateAdminStats();
-  showToast(`🔑 Credential created: ${userid} / ${pass}`);
+  showToast(`🔑 Credential created! User: ${userid} | Password: ${pass}`);
 }
 function deleteCredential(id) {
   if(!confirm('Delete this credential? Users with this ID will lose access.')) return;
@@ -4816,8 +4816,8 @@ document.addEventListener('DOMContentLoaded', loadLiveStats);
           <div>
             <label class="comp-label">User ID <em style="color:var(--g4);font-style:normal">*</em></label>
             <div style="display:flex;gap:8px">
-              <input class="comp-input" id="cr-userid" type="text" placeholder="e.g. STU-001" style="flex:1;min-width:0">
-              <button class="comp-cancel" style="padding:0 14px;white-space:nowrap;flex-shrink:0" onclick="generateCredID()" title="Auto-generate User ID">Auto</button>
+              <input class="comp-input" id="cr-userid" type="text" placeholder="e.g. qgis@airaworld.org" style="flex:1;min-width:0">
+              <button class="comp-cancel" style="padding:0 14px;white-space:nowrap;flex-shrink:0" 
             </div>
           </div>
           <div>
@@ -5278,7 +5278,7 @@ document.addEventListener('DOMContentLoaded', loadLiveStats);
     <div class="gate-err" id="gate-err">❌ Invalid credentials. Please check your User ID and Password.</div>
     <div class="form-group" style="text-align:left;margin-bottom:14px">
       <label class="comp-label">Module User ID <span id="gate-module-label" style="color:var(--g4);font-weight:700;font-size:11px;letter-spacing:.5px;margin-left:6px;text-transform:uppercase"></span></label>
-      <input class="comp-input" id="gate-userid" type="text" placeholder="e.g. STU-001" autocomplete="off" onkeydown="if(event.key==='Enter')document.getElementById('gate-pass').focus()">
+      <input class="comp-input" id="gate-userid" type="text" placeholder="e.g. qgis@airaworld.org" autocomplete="off" onkeydown="if(event.key==='Enter')document.getElementById('gate-pass').focus()">
     </div>
     <div class="form-group" style="text-align:left;margin-bottom:20px">
       <label class="comp-label">Module Password</label>

@@ -1,3 +1,4 @@
+require("dotenv").config();
 // backend/server.js
 // ═══════════════════════════════════════════════════════
 // AIRA – Axon Infotech Research Academy

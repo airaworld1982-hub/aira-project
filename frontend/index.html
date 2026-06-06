@@ -2104,8 +2104,7 @@ function adminLogin() {
   apiCall('POST', '/auth/login', { username: u, password: pw }).then(r => {
     const ok = r && r.success && r.token;
     if (ok) { _token = r.token; sessionStorage.setItem('aira_admin_token', _token); }
-    if (ok) 
- {
+    if (ok) {
       adminLoggedIn = true;
       closeAdminLogin();
       document.getElementById('admin-bar')?.classList.add('show');

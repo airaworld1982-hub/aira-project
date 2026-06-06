@@ -2105,8 +2105,6 @@ function adminLogin() {
     const ok = r && r.success && r.token;
     if (ok) { _token = r.token; sessionStorage.setItem('aira_admin_token', _token); }
     if (ok 
-git add .
-git commit -m "Fix: remove localStorage admin password fallback"
  {
       adminLoggedIn = true;
       closeAdminLogin();

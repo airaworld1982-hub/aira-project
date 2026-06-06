@@ -3898,7 +3898,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //      PUSHER_CLUSTER → "App Keys" tab → cluster (e.g. 'ap2' for South Asia)
 //   3. Deploy /api/signal and /api/pusher-auth serverless functions (Vercel/Netlify)
 //   Until configured, the classroom runs in demo/preview mode (no live video).
-const PUSHER_KEY     = (window._ENV && window._ENV.PUSHER_KEY)     || '';  // e.g. 'abc123def456'
+const PUSHER_KEY     = (window._ENV && window._ENV.PUSHER_KEY) || '8aae08c772b3016e4c6d';  // e.g. 'abc123def456'
 const PUSHER_CLUSTER = (window._ENV && window._ENV.PUSHER_CLUSTER) || '';  // e.g. 'ap2'
 // The signaling API runs on your own Vercel deployment — no extra server needed!
 const SIGNAL_API     = '/api/signal';

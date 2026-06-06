@@ -5368,3 +5368,26 @@ go = function(page, sub) {
   return result;
 };
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const _og = window.go;
+  window.go = function(page, sub) {
+    const result = _og(page, sub);
+    if(page === 'digitalclass') {
+      if(sub === 'classroom') {
+        const a = sessionStorage.getItem('aira_authed_classroom');
+        if(!a) setTimeout(function(){ if(window.openSessionGate) window.openSessionGate('classroom'); }, 400);
+      }
+      if(sub === 'conference') {
+        const a = sessionStorage.getItem('aira_authed_conference');
+        if(!a) setTimeout(function(){ if(window.openSessionGate) window.openSessionGate('conference'); }, 400);
+      }
+      if(sub === 'recordings') {
+        const a = sessionStorage.getItem('aira_authed_recordings');
+        if(!a) setTimeout(function(){ if(window.openSessionGate) window.openSessionGate('recordings'); }, 400);
+      }
+    }
+    return result;
+  };
+});
+</script>

@@ -1966,7 +1966,7 @@ function apiCall(method, path, body) {
   const headers = { 'Content-Type': 'application/json' };
   if (_token) headers['Authorization'] = 'Bearer ' + _token;
   const ctrl = new AbortController();
-  setTimeout(() => ctrl.abort(), 5000);
+  setTimeout(() => ctrl.abort(), 30000);
   return fetch(API_BASE + path, {
     method, headers,
     body: body ? JSON.stringify(body) : undefined,

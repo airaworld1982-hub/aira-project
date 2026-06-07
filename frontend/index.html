@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AIRA – Axon Infotech Research Academy</title>
+<meta name="description" content="AIRA – Advancing research, technology and innovation in Nepal and beyond."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<style>
+:root{
+  --bg:#04100a;--bg2:#071a0e;--bg3:#0b2416;
+  --sur:#0f2d1b;--sur2:#143520;
+  --bdr:#1e4a2a;--bdr2:#2a5c35;
+  --acc:#2ecc71;--acc2:#27ae60;--acc3:#52d98a;
+  --gold:#f1c40f;--red:#e74c3c;--orange:#e67e22;--blue:#3498db;
+  --t1:#e8f5ee;--t2:#a8c5b0;--t3:#6a8f72;
+  --ff1:'Syne',sans-serif;--ff2:'DM Sans',sans-serif;
+  --r:12px;--r2:20px;
+  --sh:0 4px 24px rgba(0,0,0,.4);--sh2:0 8px 40px rgba(0,0,0,.6);
+  --tr:all .25s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t1);font-family:var(--ff2);font-size:15px;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{cursor:pointer;font-family:var(--ff2);border:none;outline:none}
+input,textarea,select{font-family:var(--ff2);background:var(--sur);border:1px solid var(--bdr);color:var(--t1);border-radius:8px;padding:10px 14px;width:100%;font-size:.9rem;transition:var(--tr)}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(46,204,113,.12)}
+select option{background:var(--sur)}
+textarea{resize:vertical;min-height:90px}
+h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px}
+/* utils */
+.hid{display:none!important}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.bg{background:rgba(46,204,113,.12);color:var(--acc3);border:1px solid rgba(46,204,113,.25)}
+.bo{background:rgba(241,196,15,.12);color:var(--gold);border:1px solid rgba(241,196,15,.25)}
+.br{background:rgba(231,76,60,.12);color:var(--red);border:1px solid rgba(231,76,60,.25)}
+.bor{background:rgba(230,126,34,.12);color:var(--orange);border:1px solid rgba(230,126,34,.25)}
+.bb{background:rgba(52,152,219,.12);color:var(--blue);border:1px solid rgba(52,152,219,.25)}
+.chip{display:inline-block;padding:2px 9px;background:var(--sur2);border:1px solid var(--bdr);border-radius:20px;font-size:.72rem;color:var(--t2)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 20px;border-radius:9px;font-size:.875rem;font-weight:600;transition:var(--tr);cursor:pointer;white-space:nowrap}
+.btn-p{background:var(--acc);color:#000;border:none}
+.btn-p:hover{background:var(--acc3);transform:translateY(-1px);box-shadow:0 4px 16px rgba(46,204,113,.3)}
+.btn-o{background:transparent;color:var(--acc);border:1px solid var(--bdr2)}
+.btn-o:hover{background:rgba(46,204,113,.08);border-color:var(--acc)}
+.btn-g{background:transparent;color:var(--t2);border:1px solid var(--bdr)}
+.btn-g:hover{color:var(--t1);border-color:var(--bdr2)}
+.btn-d{background:var(--red);color:#fff;border:none}
+.btn-d:hover{background:#c0392b}
+.btn-sm{padding:5px 12px;font-size:.8rem}
+.btn-lg{padding:12px 28px;font-size:1rem}
+/* layout */
+.page{display:none;min-height:calc(100vh - 64px);animation:fadeUp .3s ease}
+.page.active{display:block}
+.con{max-width:1280px;margin:0 auto;padding:0 24px}
+.sec{padding:72px 0}
+.sec-sm{padding:40px 0}
+.sh{margin-bottom:44px}
+.sh .lbl{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sh .lbl::before{content:'';display:block;width:22px;height:2px;background:var(--acc)}
+.sh h2{font-size:clamp(1.7rem,3.5vw,2.6rem);color:#fff;margin-bottom:14px}
+.sh p{color:var(--t2);max-width:580px;font-size:1rem}
+/* ticker */
+#ticker{background:linear-gradient(90deg,var(--acc2),var(--acc));overflow:hidden;height:30px;display:flex;align-items:center;position:fixed;top:0;left:0;right:0;z-index:1100}
+.tick-inner{display:flex;gap:0;white-space:nowrap;animation:tick 35s linear infinite}
+@keyframes tick{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+.tick-label{background:var(--bg);color:var(--acc);padding:0 14px;margin-right:20px;font-family:var(--ff1);font-size:.7rem;letter-spacing:.12em;font-weight:700;flex-shrink:0;height:30px;display:flex;align-items:center}
+.tick-text{font-size:.78rem;font-weight:600;color:var(--bg)}
+/* navbar */
+#nav{position:fixed;top:30px;left:0;right:0;z-index:1000;background:rgba(4,16,10,.95);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr);height:64px}
+.nav-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;height:100%;padding:0 24px;gap:8px}
+.logo{display:flex;align-items:center;gap:10px;margin-right:12px;cursor:pointer;flex-shrink:0}
+.logo-mark{width:40px;height:40px;background:linear-gradient(135deg,var(--acc2),var(--acc3));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--ff1);font-weight:800;font-size:.95rem;color:#000;flex-shrink:0}
+.logo-name{font-family:var(--ff1);font-weight:800;font-size:1.1rem;color:#fff;letter-spacing:.04em}
+.logo-sub{font-size:.62rem;color:var(--t3);letter-spacing:.06em;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1}
+.nl{padding:7px 12px;border-radius:8px;font-size:.86rem;font-weight:500;color:var(--t2);transition:var(--tr);cursor:pointer;white-space:nowrap}
+.nl:hover,.nl.act{color:var(--acc);background:rgba(46,204,113,.08)}
+.dd{position:relative}
+.dd-menu{position:absolute;top:calc(100% + 8px);left:0;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);min-width:180px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:var(--tr);box-shadow:var(--sh2);z-index:99}
+.dd:hover .dd-menu{opacity:1;pointer-events:all;transform:none}
+.dd-item{display:block;padding:10px 16px;font-size:.85rem;color:var(--t2);cursor:pointer;transition:var(--tr)}
+.dd-item:hover{color:var(--acc);background:rgba(46,204,113,.06)}
+.nav-act{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.ham{display:none;flex-direction:column;gap:5px;padding:6px;cursor:pointer}
+.ham span{display:block;width:22px;height:2px;background:var(--t2);border-radius:2px;transition:var(--tr)}
+.ham:hover span{background:var(--acc)}
+/* mobile nav */
+#mnav{display:none;position:fixed;inset:0;z-index:9999;background:var(--bg);overflow-y:auto;padding:20px;animation:fadeUp .25s ease}
+#mnav.open{display:block}
+.mnav-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.mnav-close{width:38px;height:38px;border-radius:50%;background:var(--sur);color:var(--t2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:var(--tr)}
+.mnav-close:hover{background:var(--sur2);color:#fff}
+.ml{padding:13px 16px;border-radius:10px;font-size:.97rem;font-weight:500;color:var(--t2);cursor:pointer;transition:var(--tr)}
+.ml:hover,.ml.act{background:var(--sur);color:var(--acc)}
+.mdiv{height:1px;background:var(--bdr);margin:8px 0}
+/* loader */
+#ldr{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .5s}
+#ldr.gone{opacity:0;pointer-events:none}
+.ldr-ring{width:52px;height:52px;border:3px solid var(--bdr);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
+.ldr-txt{font-family:var(--ff1);font-weight:800;font-size:1.1rem;color:var(--acc);letter-spacing:.1em}
+/* toast */
+#toast{position:fixed;bottom:20px;right:20px;z-index:99998;display:flex;flex-direction:column;gap:8px}
+.ti{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:11px 16px;font-size:.86rem;color:var(--t1);display:flex;align-items:center;gap:10px;animation:fadeUp .3s ease;min-width:220px;box-shadow:var(--sh2)}
+.ti.s{border-left:3px solid var(--acc)}
+.ti.e{border-left:3px solid var(--red)}
+.ti.i{border-left:3px solid var(--blue)}
+/* ======== HOME ======== */
+.hero{min-height:calc(100vh - 94px);display:flex;align-items:center;position:relative;overflow:hidden;padding:60px 24px}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 65% 40%,rgba(46,204,113,.08),transparent 70%),radial-gradient(ellipse 40% 50% at 20% 80%,rgba(46,204,113,.05),transparent 60%);pointer-events:none}
+.hero-grid{max-width:1280px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.22);border-radius:100px;padding:5px 14px;font-size:.76rem;font-weight:700;color:var(--acc3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:22px}
+.hero-eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--acc);animation:pulse 2s infinite}
+.hero h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.08;color:#fff;margin-bottom:18px}
+.hero h1 .ac{color:var(--acc)}
+.hero p{font-size:1.05rem;color:var(--t2);margin-bottom:32px;max-width:500px;line-height:1.72}
+.hero-acts{display:flex;gap:12px;flex-wrap:wrap}
+/* hero card */
+.hcard{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);padding:26px;position:relative;overflow:hidden}
+.hcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--acc2),var(--acc3))}
+.hstats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.hs{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;text-align:center}
+.hs-num{font-family:var(--ff1);font-size:2.1rem;font-weight:800;color:var(--acc);line-height:1}
+.hs-lbl{font-size:.72rem;color:var(--t3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:100px;background:var(--bg2);border:1px solid var(--bdr);font-size:.78rem;color:var(--t2)}
+/* stats strip */
+.stats-strip{background:var(--sur);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:36px 0}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr)}
+.si{text-align:center;padding:0 20px;position:relative}
+.si:not(:last-child)::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);height:48%;width:1px;background:var(--bdr)}
+.si-num{font-family:var(--ff1);font-size:2.5rem;font-weight:800;color:var(--acc);line-height:1}
+.si-lbl{font-size:.82rem;color:var(--t2);margin-top:5px}
+/* features */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.feat-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);padding:30px;transition:var(--tr);position:relative;overflow:hidden}
+.feat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--acc),transparent);transform:scaleX(0);transition:var(--tr)}
+.feat-card:hover{border-color:var(--bdr2);transform:translateY(-3px)}
+.feat-card:hover::after{transform:scaleX(1)}
+.feat-icon{font-size:2.2rem;margin-bottom:14px}
+.feat-card h3{font-size:1rem;color:#fff;margin-bottom:8px}
+.feat-card p{font-size:.86rem;color:var(--t2);line-height:1.65}
+/* home latest */
+.hgrid2{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.ann-mini{padding:13px 0;border-bottom:1px solid var(--bdr)}
+.ann-mini:last-child{border-bottom:none}
+.ann-mini .t{font-size:.88rem;color:var(--t1);margin-bottom:4px;cursor:pointer;font-weight:500;transition:color .2s}
+.ann-mini .t:hover{color:var(--acc)}
+.ann-mini .m{font-size:.76rem;color:var(--t3)}
+.blog-mini{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--bdr)}
+.blog-mini:last-child{border-bottom:none}
+.blog-mini .th{width:52px;height:52px;border-radius:8px;background:var(--sur2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.blog-mini .t{font-size:.87rem;color:var(--t1);margin-bottom:4px;cursor:pointer;font-weight:500;transition:color .2s}
+.blog-mini .t:hover{color:var(--acc)}
+.blog-mini .m{font-size:.74rem;color:var(--t3)}
+/* CTA */
+.cta-box{background:linear-gradient(135deg,var(--sur),var(--bg3));border:1px solid var(--bdr);border-radius:var(--r2);padding:48px;text-align:center;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(46,204,113,.1),transparent);pointer-events:none}
+/* ======== ABOUT ======== */
+.about-hero{background:linear-gradient(135deg,var(--bg2),var(--sur));border-bottom:1px solid var(--bdr);padding:60px 24px;text-align:center}
+.mission-txt{font-size:1.07rem;color:var(--t2);line-height:1.82;font-style:italic;border-left:3px solid var(--acc);padding-left:22px}
+.mc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px;margin-top:28px}
+.mc-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:22px;text-align:center;transition:var(--tr)}
+.mc-card:hover{border-color:var(--bdr2);transform:translateY(-2px)}
+.tl{position:relative;padding-left:28px}
+.tl::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--acc),transparent)}
+.tl-item{position:relative;margin-bottom:28px;animation:fadeUp .4s ease}
+.tl-item::before{content:'';position:absolute;left:-33px;top:5px;width:11px;height:11px;border-radius:50%;background:var(--acc);border:2px solid var(--bg);box-shadow:0 0 0 3px rgba(46,204,113,.18)}
+.tl-year{font-family:var(--ff1);font-size:.76rem;font-weight:700;color:var(--acc);letter-spacing:.08em;margin-bottom:3px}
+.tl-item h4{font-size:.97rem;color:#fff;margin-bottom:4px}
+.tl-item p{font-size:.84rem;color:var(--t2)}
+.val-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:14px}
+.val-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;transition:var(--tr)}
+.val-card:hover{border-color:var(--acc)}
+/* ======== TEAM ======== */
+.team-tabs{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.tt{padding:7px 18px;border-radius:100px;font-size:.85rem;font-weight:500;cursor:pointer;transition:var(--tr);background:var(--sur);border:1px solid var(--bdr);color:var(--t2)}
+.tt.act{background:var(--acc);color:#000;border-color:var(--acc)}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.tc{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;transition:var(--tr)}
+.tc:hover{border-color:var(--bdr2);transform:translateY(-4px);box-shadow:var(--sh2)}
+.tc-photo{height:195px;background:var(--sur2);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.tc-photo img{width:100%;height:100%;object-fit:cover}
+.tc-body{padding:18px}
+.tc-body h3{font-size:.97rem;color:#fff;margin-bottom:3px}
+.tc-role{font-size:.78rem;color:var(--acc);font-weight:600;margin-bottom:7px}
+.tc-bio{font-size:.8rem;color:var(--t2);line-height:1.58;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+/* ======== PROJECTS ======== */
+.proj-tabs{display:flex;gap:8px;margin-bottom:28px}
+.pt{padding:7px 18px;border-radius:100px;font-size:.85rem;font-weight:500;cursor:pointer;transition:var(--tr);background:var(--sur);border:1px solid var(--bdr);color:var(--t2)}
+.pt.act{background:var(--acc);color:#000;border-color:var(--acc)}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:22px}
+.pcard{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);padding:26px;transition:var(--tr)}
+.pcard:hover{border-color:var(--bdr2);transform:translateY(-3px)}
+.p-emoji{font-size:2.1rem;margin-bottom:12px}
+.p-meta{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.p-meta-row{display:flex;gap:7px;font-size:.78rem;color:var(--t3)}
+.p-meta-row strong{color:var(--t2);min-width:65px;flex-shrink:0}
+/* ======== SERVICES ======== */
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px}
+.sc{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);padding:30px;transition:var(--tr);position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--acc2),var(--acc3));transform:scaleX(0);transform-origin:left;transition:var(--tr)}
+.sc:hover{border-color:var(--bdr2);transform:translateY(-3px)}
+.sc:hover::before{transform:scaleX(1)}
+.sc-icon{font-size:2.6rem;margin-bottom:14px}
+.svc-feats{list-style:none;margin-top:14px}
+.svc-feats li{font-size:.8rem;color:var(--t2);padding:3px 0;display:flex;align-items:center;gap:7px}
+.svc-feats li::before{content:'✓';color:var(--acc);font-weight:700;flex-shrink:0}
+/* ======== BLOGS ======== */
+.blog-flt{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.bf{padding:5px 14px;border-radius:100px;font-size:.8rem;font-weight:500;cursor:pointer;transition:var(--tr);background:var(--sur);border:1px solid var(--bdr);color:var(--t2)}
+.bf.act{background:var(--acc);color:#000;border-color:var(--acc)}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:22px}
+.bc{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;transition:var(--tr)}
+.bc:hover{border-color:var(--bdr2);transform:translateY(-3px)}
+.bc-img{height:155px;background:var(--sur2);display:flex;align-items:center;justify-content:center;font-size:2.8rem;overflow:hidden}
+.bc-img img{width:100%;height:100%;object-fit:cover}
+.bc-body{padding:18px}
+.bc-cat{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
+.bc-body h3{font-size:.97rem;color:#fff;margin-bottom:7px;line-height:1.38;cursor:pointer;transition:color .2s}
+.bc-body h3:hover{color:var(--acc)}
+.bc-exc{font-size:.82rem;color:var(--t2);line-height:1.58;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.bc-ft{display:flex;justify-content:space-between;font-size:.75rem;color:var(--t3)}
+/* blog detail overlay */
+#blog-ov{position:fixed;inset:0;z-index:9900;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;padding:20px}
+#blog-ov-inner{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r2);max-width:740px;width:100%;max-height:90vh;overflow-y:auto}
+.ov-hd{padding:26px 26px 0}
+.ov-body{padding:20px 26px 26px;color:var(--t2);line-height:1.82;font-size:.93rem;white-space:pre-wrap}
+/* ======== ANNOUNCEMENTS ======== */
+.ann-flt{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.af{padding:5px 14px;border-radius:100px;font-size:.8rem;font-weight:500;cursor:pointer;transition:var(--tr);background:var(--sur);border:1px solid var(--bdr);color:var(--t2)}
+.af.act{background:var(--acc);color:#000;border-color:var(--acc)}
+.ann-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:22px;margin-bottom:14px;transition:var(--tr)}
+.ann-card.urgent{border-left:4px solid var(--red)}
+.ann-card.important{border-left:4px solid var(--gold)}
+.ann-card.normal{border-left:4px solid var(--bdr)}
+.ann-card:hover{border-color:var(--bdr2)}
+.ann-card h3{font-size:.97rem;color:#fff;margin-bottom:7px;cursor:pointer;transition:color .2s}
+.ann-card h3:hover{color:var(--acc)}
+.ann-content{font-size:.85rem;color:var(--t2);line-height:1.65;margin-bottom:10px}
+.ann-ft{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+/* ======== GALLERY ======== */
+.gal-flt{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.gf{padding:5px 14px;border-radius:100px;font-size:.8rem;font-weight:500;cursor:pointer;transition:var(--tr);background:var(--sur);border:1px solid var(--bdr);color:var(--t2)}
+.gf.act{background:var(--acc);color:#000;border-color:var(--acc)}
+.gal-grid{columns:3;column-gap:14px}
+.gi{break-inside:avoid;margin-bottom:14px;border-radius:var(--r);overflow:hidden;cursor:pointer;transition:var(--tr);background:var(--sur2);position:relative}
+.gi:hover{transform:scale(1.02)}
+.gi img{width:100%;display:block}
+.gi-ph{display:flex;align-items:center;justify-content:center;height:175px;font-size:2.4rem;background:var(--sur2)}
+.gi-ov{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;opacity:0;transition:var(--tr)}
+.gi:hover .gi-ov{opacity:1}
+.gi-ov p{color:#fff;font-size:.83rem;text-align:center;padding:8px}
+/* lightbox */
+#lb{position:fixed;inset:0;z-index:9900;background:rgba(0,0,0,.96);display:flex;align-items:center;justify-content:center;padding:20px}
+#lb img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--r)}
+#lb .lb-cap{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:#fff;font-size:.88rem;background:rgba(0,0,0,.6);padding:6px 14px;border-radius:100px}
+/* ======== CONTACT ======== */
+.contact-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:38px;align-items:start}
+.cinfo{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);padding:28px}
+.ci-item{display:flex;gap:13px;padding:14px 0;border-bottom:1px solid var(--bdr)}
+.ci-item:last-child{border-bottom:none}
+.ci-icon{width:38px;height:38px;border-radius:10px;background:rgba(46,204,113,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.ci-item strong{display:block;font-size:.73rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.ci-item span{font-size:.88rem;color:var(--t1)}
+.cform{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);padding:28px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:.8rem;font-weight:500;color:var(--t2);margin-bottom:5px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+/* ======== DIGITAL CLASS ======== */
+.dc-hero{background:linear-gradient(135deg,var(--bg2),var(--sur));border-bottom:1px solid var(--bdr);padding:48px 24px;text-align:center}
+.dc-rooms{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.dc-room{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);padding:30px 22px;text-align:center;cursor:pointer;transition:var(--tr);position:relative;overflow:hidden}
+.dc-room::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(46,204,113,.06),transparent);opacity:0;transition:var(--tr)}
+.dc-room:hover{border-color:var(--acc);transform:translateY(-4px);box-shadow:0 8px 30px rgba(46,204,113,.14)}
+.dc-room:hover::after{opacity:1}
+.dc-room .ri{font-size:2.8rem;margin-bottom:14px}
+.dc-room h3{font-size:1.1rem;color:#fff;margin-bottom:7px}
+.dc-room p{font-size:.83rem;color:var(--t2);margin-bottom:18px;line-height:1.5}
+.room-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:var(--acc);color:#000;border-radius:8px;font-weight:700;font-size:.84rem;transition:var(--tr)}
+.dc-room:hover .room-btn{background:var(--acc3)}
+/* lobby */
+.lobby-wrap{max-width:470px;margin:0 auto}
+.lob-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden}
+.lob-hd{background:linear-gradient(135deg,var(--bg2),var(--sur2));padding:26px;text-align:center;border-bottom:1px solid var(--bdr)}
+.lob-hd .li{font-size:2.8rem;margin-bottom:8px}
+.lob-hd h2{font-size:1.25rem;color:#fff;margin-bottom:4px}
+.lob-hd p{font-size:.83rem;color:var(--t2)}
+.lob-body{padding:26px}
+.lob-info{background:rgba(46,204,113,.06);border:1px solid rgba(46,204,113,.18);border-radius:8px;padding:11px 13px;font-size:.8rem;color:var(--t2);margin-bottom:18px}
+.lob-err{background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.3);border-radius:8px;padding:9px 13px;font-size:.83rem;color:var(--red);margin-bottom:14px}
+/* classroom */
+.cl-ui{padding:22px}
+.cl-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:11px;margin-bottom:14px}
+.vbox{background:#000;border:1px solid var(--bdr);border-radius:var(--r);aspect-ratio:4/3;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+.vbox video{width:100%;height:100%;object-fit:cover}
+.vlbl{position:absolute;bottom:7px;left:7px;background:rgba(0,0,0,.7);border-radius:4px;padding:2px 8px;font-size:.72rem;color:#fff}
+.cc{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.cctrl{padding:9px 16px;border-radius:8px;font-size:.83rem;font-weight:600;transition:var(--tr);border:none;display:flex;align-items:center;gap:5px}
+.cg{background:rgba(46,204,113,.12);color:var(--acc);border:1px solid rgba(46,204,113,.25)}
+.cg:hover{background:var(--acc);color:#000}
+.cr{background:rgba(231,76,60,.12);color:var(--red);border:1px solid rgba(231,76,60,.25)}
+.cr:hover{background:var(--red);color:#fff}
+.cgr{background:var(--sur);color:var(--t2);border:1px solid var(--bdr)}
+.cgr:hover{border-color:var(--bdr2);color:var(--t1)}
+.chat-pnl{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-top:14px}
+.chat-ttl{padding:9px 13px;border-bottom:1px solid var(--bdr);font-size:.83rem;font-weight:600;color:var(--t2)}
+.chat-msgs{height:195px;overflow-y:auto;padding:11px;display:flex;flex-direction:column;gap:7px}
+.cm{font-size:.8rem;line-height:1.38}
+.cm strong{color:var(--acc)}
+.chat-in{display:flex;gap:7px;padding:7px;border-top:1px solid var(--bdr)}
+.chat-in input{flex:1;padding:7px 10px;font-size:.8rem}
+.chat-in button{padding:7px 13px;background:var(--acc);color:#000;border-radius:6px;font-size:.8rem;font-weight:700;white-space:nowrap}
+/* conf */
+.conf-ui{padding:22px;max-width:580px;margin:0 auto}
+.zoom-box{background:var(--bg2);border:2px solid var(--bdr2);border-radius:var(--r2);padding:30px;text-align:center;margin-bottom:22px}
+.zoom-link-txt{font-family:monospace;font-size:.8rem;color:var(--acc);word-break:break-all;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:9px 12px;margin-bottom:14px}
+/* rec */
+.rec-ui{padding:22px}
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.rc{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;transition:var(--tr)}
+.rc:hover{border-color:var(--bdr2)}
+.rc-th{background:var(--sur2);border-radius:8px;height:115px;display:flex;align-items:center;justify-content:center;font-size:2.4rem;margin-bottom:10px}
+/* ======== ADMIN ======== */
+.adm-wrap{display:flex;min-height:calc(100vh - 94px)}
+.adm-side{width:235px;background:var(--bg2);border-right:1px solid var(--bdr);padding:16px 0;flex-shrink:0;position:sticky;top:94px;height:calc(100vh - 94px);overflow-y:auto}
+.side-sec{padding:7px 16px;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-top:14px}
+.side-item{display:flex;align-items:center;gap:9px;padding:9px 18px;font-size:.85rem;color:var(--t2);cursor:pointer;transition:var(--tr);border-left:3px solid transparent}
+.side-item:hover{background:var(--sur);color:var(--t1)}
+.side-item.act{background:rgba(46,204,113,.08);color:var(--acc);border-left-color:var(--acc)}
+.side-item .ico{width:17px;text-align:center;font-size:.97rem}
+.adm-main{flex:1;padding:26px;overflow:auto}
+.apnl{display:none}
+.apnl.act{display:block;animation:fadeUp .22s ease}
+.apnl-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.apnl-hd h2{font-size:1.35rem;color:#fff}
+/* table */
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{background:var(--sur);color:var(--t2);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;padding:9px 15px;text-align:left;border-bottom:1px solid var(--bdr)}
+.tbl td{padding:11px 15px;border-bottom:1px solid var(--bdr);color:var(--t2);vertical-align:middle}
+.tbl tr:hover td{background:var(--sur);color:var(--t1)}
+.tbl tr:last-child td{border-bottom:none}
+.tdact{display:flex;gap:5px}
+/* dash */
+.dash-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;margin-bottom:28px}
+.dc2{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px;text-align:center}
+.dc2-num{font-family:var(--ff1);font-size:1.9rem;font-weight:800;color:var(--acc)}
+.dc2-lbl{font-size:.76rem;color:var(--t3);margin-top:3px}
+.dc2-ico{font-size:1.5rem;margin-bottom:6px}
+/* modal */
+.modal-bd{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;padding:18px}
+.modal-box{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r2);width:100%;max-width:550px;max-height:90vh;overflow-y:auto}
+.modal-hd{padding:18px 22px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.modal-hd h3{font-size:1.05rem;color:#fff}
+.modal-body{padding:22px}
+.modal-ft{padding:14px 22px;border-top:1px solid var(--bdr);display:flex;justify-content:flex-end;gap:9px}
+.cbtn{width:32px;height:32px;border-radius:50%;background:var(--sur);color:var(--t2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.95rem;transition:var(--tr);flex-shrink:0;border:none}
+.cbtn:hover{background:var(--red);color:#fff}
+/* adm login */
+.al-hd{text-align:center;padding:30px 22px 0}
+.al-ico{font-size:2.8rem;margin-bottom:10px}
+/* about admin */
+.aa-sec{margin-bottom:26px}
+.aa-sec-t{font-size:1rem;color:#fff;margin-bottom:11px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+/* empty state */
+.es{text-align:center;padding:56px 22px;color:var(--t3)}
+.es .ei{font-size:2.8rem;margin-bottom:10px}
+.es p{font-size:.9rem}
+/* footer */
+footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 22px}
+.ft-grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:2fr repeat(3,1fr);gap:36px;margin-bottom:36px}
+.ft-brand p{font-size:.85rem;color:var(--t2);line-height:1.7;margin:10px 0 14px;max-width:250px}
+.ft-col h4{font-size:.76rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:12px}
+.fl{display:block;font-size:.85rem;color:var(--t2);margin-bottom:7px;cursor:pointer;transition:color .2s}
+.fl:hover{color:var(--acc)}
+.ft-bottom{max-width:1280px;margin:0 auto;padding-top:18px;border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:.77rem;color:var(--t3)}
+/* responsive */
+@media(max-width:1024px){
+  .feat-grid{grid-template-columns:repeat(2,1fr)}
+  .ft-grid{grid-template-columns:1fr 1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .dc-rooms{grid-template-columns:1fr}
+  .adm-side{width:195px}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .ham{display:flex}
+  .hero-grid{grid-template-columns:1fr;gap:28px}
+  .hcard{display:none}
+  .feat-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .hgrid2{grid-template-columns:1fr}
+  .team-grid{grid-template-columns:repeat(2,1fr)}
+  .proj-grid{grid-template-columns:1fr}
+  .gal-grid{columns:2}
+  .ft-grid{grid-template-columns:1fr;gap:22px}
+  .frow{grid-template-columns:1fr}
+  .adm-wrap{flex-direction:column}
+  .adm-side{width:100%;height:auto;position:relative;top:0;display:flex;flex-wrap:wrap;padding:8px;gap:4px;border-right:none;border-bottom:1px solid var(--bdr)}
+  .side-item{padding:7px 11px;font-size:.78rem;border-left:none;border-radius:8px;border-bottom:3px solid transparent}
+  .side-item.act{border-bottom-color:var(--acc);border-left-color:transparent}
+  .side-sec{display:none}
+}
+@media(max-width:480px){
+  .team-grid{grid-template-columns:1fr}
+  .gal-grid{columns:1}
+  .dash-cards{grid-template-columns:repeat(2,1fr)}
+  .dc-rooms{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<!-- LOADER -->
+<div id="ldr"><div class="ldr-ring"></div><div class="ldr-txt">AIRA</div></div>
+<!-- TOAST -->
+<div id="toast"></div>
+<!-- TICKER -->
+<div id="ticker"><div class="tick-inner"><span class="tick-label">NEWS</span><span class="tick-text" id="tick-t">Welcome to AIRA – Axon Infotech Research Academy • Advancing Research, Technology &amp; Innovation •&nbsp;&nbsp;&nbsp;&nbsp;</span></div></div>
+<!-- NAVBAR -->
+<nav id="nav">
+  <div class="nav-in">
+    <div class="logo" onclick="go('home')">
+      <div class="logo-mark">AI</div>
+      <div><div class="logo-name">AIRA</div><div class="logo-sub">Research Academy</div></div>
+    </div>
+    <div class="nav-links">
+      <span class="nl" onclick="go('home')">Home</span>
+      <span class="nl" onclick="go('about')">About</span>
+      <span class="nl" onclick="go('team')">Team</span>
+      <span class="nl" onclick="go('projects')">Projects</span>
+      <span class="nl" onclick="go('services')">Services</span>
+      <span class="nl" onclick="go('blogs')">Blogs</span>
+      <span class="nl" onclick="go('ann')">Announcements</span>
+      <span class="nl" onclick="go('gallery')">Gallery</span>
+      <span class="nl" onclick="go('contact')">Contact</span>
+      <div class="dd">
+        <span class="nl">Digital Class ▾</span>
+        <div class="dd-menu">
+          <div class="dd-item" onclick="openGateAndGo('classroom')">🎓 Classroom</div>
+          <div class="dd-item" onclick="openGateAndGo('conference')">📹 Conference</div>
+          <div class="dd-item" onclick="openGateAndGo('recordings')">🎬 Recordings</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-act">
+      <button class="btn btn-p btn-sm" onclick="openAdminLogin()">Admin</button>
+      <div class="ham" onclick="toggleMnav()"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</nav>
+<!-- MOBILE NAV -->
+<div id="mnav">
+  <div class="mnav-hd">
+    <div class="logo"><div class="logo-mark">AI</div><div><div class="logo-name">AIRA</div><div class="logo-sub">Research Academy</div></div></div>
+    <div class="mnav-close" onclick="toggleMnav()">✕</div>
+  </div>
+  <div class="ml" onclick="goM('home')">🏠 Home</div>
+  <div class="ml" onclick="goM('about')">ℹ️ About</div>
+  <div class="ml" onclick="goM('team')">👥 Our Team</div>
+  <div class="ml" onclick="goM('projects')">🚀 Projects</div>
+  <div class="ml" onclick="goM('services')">⚙️ Services</div>
+  <div class="ml" onclick="goM('blogs')">📝 Blogs</div>
+  <div class="ml" onclick="goM('ann')">📢 Announcements</div>
+  <div class="ml" onclick="goM('gallery')">🖼️ Gallery</div>
+  <div class="ml" onclick="goM('contact')">✉️ Contact</div>
+  <div class="mdiv"></div>
+  <div class="ml" onclick="openGateGoM('classroom')">🎓 Classroom</div>
+  <div class="ml" onclick="openGateGoM('conference')">📹 Conference</div>
+  <div class="ml" onclick="openGateGoM('recordings')">🎬 Recordings</div>
+  <div class="mdiv"></div>
+  <div class="ml" onclick="openAdminLogin();toggleMnav()">🔐 Admin Login</div>
+</div>
+<!-- HOME PAGE -->
+<div id="pg-home" class="page">
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow"><span class="dot"></span>Nepal's Leading Research Academy</div>
+        <h1>Advancing <span class="ac">Research</span> &amp; Innovation in Nepal</h1>
+        <p>AIRA bridges the gap between academic research, technology, and real-world policy impact across South Asia.</p>
+        <div class="hero-acts">
+          <button class="btn btn-p btn-lg" onclick="go('about')">Discover AIRA</button>
+          <button class="btn btn-o btn-lg" onclick="go('projects')">Our Projects</button>
+        </div>
+      </div>
+      <div>
+        <div class="hcard">
+          <div class="hstats">
+            <div class="hs"><div class="hs-num" id="hs-p">—</div><div class="hs-lbl">Projects</div></div>
+            <div class="hs"><div class="hs-num" id="hs-t">—</div><div class="hs-lbl">Team</div></div>
+            <div class="hs"><div class="hs-num" id="hs-b">—</div><div class="hs-lbl">Publications</div></div>
+            <div class="hs"><div class="hs-num" id="hs-y">7+</div><div class="hs-lbl">Years</div></div>
+          </div>
+          <div class="pills">
+            <div class="pill">🔬 Research</div><div class="pill">💻 Technology</div>
+            <div class="pill">📊 Policy</div><div class="pill">🌏 Nepal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="stats-strip"><div class="con"><div class="stats-row">
+    <div class="si"><div class="si-num" id="ss-y">7+</div><div class="si-lbl">Years of Excellence</div></div>
+    <div class="si"><div class="si-num" id="ss-p">20+</div><div class="si-lbl">Research Projects</div></div>
+    <div class="si"><div class="si-num" id="ss-t">50+</div><div class="si-lbl">Team Members</div></div>
+    <div class="si"><div class="si-num" id="ss-b">100+</div><div class="si-lbl">Publications</div></div>
+  </div></div></div>
+  <section class="sec">
+    <div class="con">
+      <div class="sh"><div class="lbl">What We Do</div><h2>Driving Impact Through Knowledge</h2><p>From cutting-edge research to capacity building, AIRA brings together experts to create lasting change.</p></div>
+      <div class="feat-grid">
+        <div class="feat-card"><div class="feat-icon">🔬</div><h3>Applied Research</h3><p>Rigorous, evidence-based research in technology, policy, and social development that informs decision-makers and practitioners.</p></div>
+        <div class="feat-card"><div class="feat-icon">🎓</div><h3>Digital Education</h3><p>Interactive online learning through our digital classroom platform, connecting learners with expert instructors across Nepal.</p></div>
+        <div class="feat-card"><div class="feat-icon">🤝</div><h3>Strategic Partnerships</h3><p>Building bridges between academia, government, and industry to translate research into meaningful policy implementation.</p></div>
+        <div class="feat-card"><div class="feat-icon">📊</div><h3>Data &amp; Analytics</h3><p>Harnessing data science and analytics to surface insights from complex datasets and support evidence-based decisions.</p></div>
+        <div class="feat-card"><div class="feat-icon">🌱</div><h3>Capacity Building</h3><p>Training the next generation of researchers, practitioners, and leaders through workshops, mentorship, and structured programs.</p></div>
+        <div class="feat-card"><div class="feat-icon">🌐</div><h3>Global Outreach</h3><p>Connecting Nepal's research community with global networks, funding agencies, and international collaborators.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="sec" style="padding-top:0">
+    <div class="con">
+      <div class="hgrid2">
+        <div>
+          <div class="sh" style="margin-bottom:16px"><div class="lbl">Latest</div><h2 style="font-size:1.55rem">Announcements</h2></div>
+          <div id="h-ann"></div>
+          <button class="btn btn-o" style="margin-top:14px;width:100%" onclick="go('ann')">View All Announcements</button>
+        </div>
+        <div>
+          <div class="sh" style="margin-bottom:16px"><div class="lbl">From the Blog</div><h2 style="font-size:1.55rem">Latest Articles</h2></div>
+          <div id="h-blogs"></div>
+          <button class="btn btn-o" style="margin-top:14px;width:100%" onclick="go('blogs')">View All Articles</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="sec" style="padding-top:0">
+    <div class="con">
+      <div class="cta-box">
+        <h2 style="font-size:clamp(1.5rem,3vw,2.1rem);color:#fff;margin-bottom:11px">Ready to Collaborate?</h2>
+        <p style="color:var(--t2);max-width:460px;margin:0 auto 26px;font-size:1rem">Join AIRA's growing network of researchers, academics, and professionals making a difference.</p>
+        <div style="display:flex;gap:11px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-p btn-lg" onclick="go('contact')">Get in Touch</button>
+          <button class="btn btn-o btn-lg" onclick="openGateAndGo('classroom')">Join Classroom</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- ABOUT PAGE -->
+<div id="pg-about" class="page">
+  <div class="about-hero"><div style="max-width:760px;margin:0 auto"><div class="sh" style="margin-bottom:14px;text-align:center"><div class="lbl" style="justify-content:center">Who We Are</div></div><h1 style="font-size:clamp(1.9rem,4vw,3rem);color:#fff;margin-bottom:12px">About AIRA</h1><p style="color:var(--t2);font-size:1.05rem">Axon Infotech Research Academy is a leading multidisciplinary research organization committed to bridging the gap between knowledge and action in Nepal and across South Asia.</p></div></div>
+  <section class="sec"><div class="con">
+    <div class="hgrid2" style="gap:56px">
+      <div>
+        <div class="sh"><div class="lbl">Our Purpose</div><h2>Mission &amp; Vision</h2></div>
+        <div id="ab-mission" class="mission-txt">Loading mission statement...</div>
+        <div id="ab-mc" class="mc-grid"></div>
+      </div>
+      <div>
+        <div class="sh"><div class="lbl">Our Journey</div><h2>History &amp; Milestones</h2></div>
+        <div id="ab-tl" class="tl"><div class="es"><div class="ei">📅</div><p>No history entries yet.</p></div></div>
+      </div>
+    </div>
+    <div class="sh" style="margin-top:56px"><div class="lbl">What We Stand For</div><h2>Core Values</h2></div>
+    <div id="ab-vals" class="val-grid"></div>
+  </div></section>
+</div>
+<!-- TEAM PAGE -->
+<div id="pg-team" class="page"><section class="sec"><div class="con">
+  <div class="sh"><div class="lbl">Our People</div><h2>Meet the Team</h2><p>Talented researchers, technologists, and policy experts driving AIRA's mission forward.</p></div>
+  <div class="team-tabs"><div class="tt act" onclick="ftTeam('all',this)">All</div><div class="tt" onclick="ftTeam('board',this)">Board</div><div class="tt" onclick="ftTeam('leadership',this)">Leadership</div><div class="tt" onclick="ftTeam('research',this)">Research</div></div>
+  <div id="team-grid" class="team-grid"><div class="es"><div class="ei">👥</div><p>Loading team...</p></div></div>
+</div></section></div>
+<!-- PROJECTS PAGE -->
+<div id="pg-projects" class="page"><section class="sec"><div class="con">
+  <div class="sh"><div class="lbl">Our Work</div><h2>Research Projects</h2><p>Impactful projects spanning technology, policy, health and social development.</p></div>
+  <div class="proj-tabs"><div class="pt act" onclick="ftProj('all',this)">All</div><div class="pt" onclick="ftProj('current',this)">Current</div><div class="pt" onclick="ftProj('past',this)">Past</div></div>
+  <div id="proj-grid" class="proj-grid"><div class="es"><div class="ei">🚀</div><p>Loading projects...</p></div></div>
+</div></section></div>
+<!-- SERVICES PAGE -->
+<div id="pg-services" class="page"><section class="sec"><div class="con">
+  <div class="sh"><div class="lbl">What We Offer</div><h2>Our Services</h2><p>Comprehensive research, training, and consultancy services tailored to your needs.</p></div>
+  <div id="svc-grid" class="svc-grid"><div class="es"><div class="ei">⚙️</div><p>Loading services...</p></div></div>
+</div></section></div>
+<!-- BLOGS PAGE -->
+<div id="pg-blogs" class="page"><section class="sec"><div class="con">
+  <div class="sh"><div class="lbl">Knowledge Hub</div><h2>Articles &amp; Blogs</h2><p>Insights, research summaries, and commentary from our team of experts.</p></div>
+  <div class="blog-flt"><div class="bf act" onclick="ftBlog('all',this)">All</div><div class="bf" onclick="ftBlog('national',this)">National</div><div class="bf" onclick="ftBlog('international',this)">International</div><div class="bf" onclick="ftBlog('research',this)">Research</div><div class="bf" onclick="ftBlog('policy',this)">Policy</div><div class="bf" onclick="ftBlog('tech',this)">Tech</div><div class="bf" onclick="ftBlog('event',this)">Events</div></div>
+  <div id="blog-grid" class="blog-grid"><div class="es"><div class="ei">📝</div><p>Loading articles...</p></div></div>
+</div></section></div>
+<!-- blog overlay -->
+<div id="blog-ov" class="hid" onclick="closeBlogOv(event)">
+  <div id="blog-ov-inner" onclick="event.stopPropagation()">
+    <div class="ov-hd"><button class="cbtn" style="float:right" onclick="closeBlogOv()">✕</button><div id="ov-cat" style="font-size:.7rem;color:var(--acc);font-weight:700;letter-spacing:.1em;text-transform:uppercase"></div><h2 id="ov-title" style="font-size:1.45rem;color:#fff;margin:8px 0"></h2><div id="ov-meta" style="font-size:.78rem;color:var(--t3)"></div></div>
+    <div class="ov-body" id="ov-content"></div>
+  </div>
+</div>
+<!-- ANNOUNCEMENTS PAGE -->
+<div id="pg-ann" class="page"><section class="sec"><div class="con">
+  <div class="sh"><div class="lbl">Updates</div><h2>Announcements</h2><p>Stay updated with the latest news, events, and opportunities from AIRA.</p></div>
+  <div class="ann-flt"><div class="af act" onclick="ftAnn('all',this)">All</div><div class="af" onclick="ftAnn('general',this)">General</div><div class="af" onclick="ftAnn('event',this)">Events</div><div class="af" onclick="ftAnn('training',this)">Training</div><div class="af" onclick="ftAnn('vacancy',this)">Vacancies</div><div class="af" onclick="ftAnn('publication',this)">Publications</div><div class="af" onclick="ftAnn('award',this)">Awards</div></div>
+  <div id="ann-list"></div>
+</div></section></div>
+<!-- GALLERY PAGE -->
+<div id="pg-gallery" class="page"><section class="sec"><div class="con">
+  <div class="sh"><div class="lbl">Media</div><h2>Gallery</h2><p>Photos and media from our events, research activities, and team.</p></div>
+  <div class="gal-flt"><div class="gf act" onclick="ftGal('all',this)">All</div><div class="gf" onclick="ftGal('photo',this)">Photos</div><div class="gf" onclick="ftGal('event',this)">Events</div><div class="gf" onclick="ftGal('research',this)">Research</div><div class="gf" onclick="ftGal('team',this)">Team</div></div>
+  <div id="gal-grid" class="gal-grid"></div>
+</div></section></div>
+<!-- lightbox -->
+<div id="lb" class="hid" onclick="closeLb()"><img id="lb-img" src="" alt=""/><button class="cbtn" style="position:absolute;top:16px;right:16px" onclick="closeLb()">✕</button><div id="lb-cap" class="lb-cap"></div></div>
+<!-- CONTACT PAGE -->
+<div id="pg-contact" class="page"><section class="sec"><div class="con">
+  <div class="sh"><div class="lbl">Get in Touch</div><h2>Contact Us</h2><p>Have a question or want to collaborate? We'd love to hear from you.</p></div>
+  <div class="contact-grid">
+    <div class="cinfo">
+      <h3 style="margin-bottom:18px;color:#fff">Contact Information</h3>
+      <div class="ci-item"><div class="ci-icon">📍</div><div><strong>Address</strong><span>Kathmandu, Nepal</span></div></div>
+      <div class="ci-item"><div class="ci-icon">📧</div><div><strong>Email</strong><span>info@airaworld.org</span></div></div>
+      <div class="ci-item"><div class="ci-icon">🌐</div><div><strong>Website</strong><span>www.airaworld.org</span></div></div>
+      <div class="ci-item"><div class="ci-icon">🕐</div><div><strong>Hours</strong><span>Sun–Fri: 9:00 AM – 5:00 PM</span></div></div>
+    </div>
+    <div class="cform">
+      <h3 style="margin-bottom:18px;color:#fff">Send us a Message</h3>
+      <form onsubmit="submitContact(event)">
+        <div class="frow"><div class="fg"><label>Your Name *</label><input id="c-name" required placeholder="Full name"/></div><div class="fg"><label>Email *</label><input type="email" id="c-email" required placeholder="your@email.com"/></div></div>
+        <div class="fg"><label>Subject</label><input id="c-subject" placeholder="What is this about?"/></div>
+        <div class="fg"><label>Message *</label><textarea id="c-msg" required style="min-height:135px" placeholder="Your message..."></textarea></div>
+        <button type="submit" id="c-sub" class="btn btn-p" style="width:100%">Send Message</button>
+      </form>
+    </div>
+  </div>
+</div></section></div>
+<!-- DIGITAL CLASS PAGE -->
+<div id="pg-dc" class="page">
+  <div class="dc-hero"><div style="max-width:760px;margin:0 auto;text-align:center"><div class="sh" style="margin-bottom:10px;text-align:center"><div class="lbl" style="justify-content:center">Digital Learning</div></div><h1 style="font-size:clamp(1.8rem,3vw,2.7rem);color:#fff;margin-bottom:10px">Digital Class</h1><p style="color:var(--t2)">Access our interactive classroom, conference room, and recorded sessions.</p></div></div>
+  <section class="sec"><div class="con">
+    <!-- room selection -->
+    <div id="dc-rooms" class="dc-rooms">
+      <div class="dc-room" onclick="openGate('classroom')"><div class="ri">🎓</div><h3>Classroom</h3><p>Join live interactive sessions with video, audio, and real-time chat.</p><div class="room-btn">Enter Classroom →</div></div>
+      <div class="dc-room" onclick="openGate('conference')"><div class="ri">📹</div><h3>Conference Room</h3><p>Join scheduled conferences and official meetings with your team.</p><div class="room-btn">Enter Conference →</div></div>
+      <div class="dc-room" onclick="openGate('recordings')"><div class="ri">🎬</div><h3>Recordings</h3><p>Browse and watch previously recorded sessions at your own pace.</p><div class="room-btn">View Recordings →</div></div>
+    </div>
+    <!-- gate lobbies -->
+    <div id="dc-gate" class="hid">
+      <div style="text-align:center;margin-bottom:24px"><button class="btn btn-g btn-sm" onclick="backToRooms()">← Back to Rooms</button></div>
+      <!-- classroom lobby -->
+      <div id="lob-classroom" class="lobby-wrap hid">
+        <div class="lob-card">
+          <div class="lob-hd"><div class="li">🎓</div><h2>Classroom Access</h2><p>Enter your credentials to join the live session</p></div>
+          <div class="lob-body">
+            <div class="lob-info">📋 Contact admin to receive your classroom credentials.</div>
+            <div id="lerr-classroom" class="lob-err hid"></div>
+            <div class="fg"><label>User ID</label><input id="cl-uid" placeholder="e.g. aira@classroom" autocomplete="username"/></div>
+            <div class="fg"><label>Password</label><input type="password" id="cl-pw" placeholder="Your password" autocomplete="current-password"/></div>
+            <button class="btn btn-p" style="width:100%" id="cl-btn" onclick="submitLobby('classroom')">Enter Classroom</button>
+          </div>
+        </div>
+      </div>
+      <!-- conference lobby -->
+      <div id="lob-conference" class="lobby-wrap hid">
+        <div class="lob-card">
+          <div class="lob-hd"><div class="li">📹</div><h2>Conference Access</h2><p>Enter your credentials to access the conference room</p></div>
+          <div class="lob-body">
+            <div class="lob-info">📋 Contact admin to receive your conference credentials.</div>
+            <div id="lerr-conference" class="lob-err hid"></div>
+            <div class="fg"><label>User ID</label><input id="conf-uid" placeholder="e.g. aira@conference" autocomplete="username"/></div>
+            <div class="fg"><label>Password</label><input type="password" id="conf-pw" placeholder="Your password" autocomplete="current-password"/></div>
+            <button class="btn btn-p" style="width:100%" id="conf-btn" onclick="submitLobby('conference')">Enter Conference</button>
+          </div>
+        </div>
+      </div>
+      <!-- recordings lobby -->
+      <div id="lob-recordings" class="lobby-wrap hid">
+        <div class="lob-card">
+          <div class="lob-hd"><div class="li">🎬</div><h2>Recordings Access</h2><p>Enter your credentials to access recorded sessions</p></div>
+          <div class="lob-body">
+            <div class="lob-info">📋 Contact admin to receive your recordings credentials.</div>
+            <div id="lerr-recordings" class="lob-err hid"></div>
+            <div class="fg"><label>User ID</label><input id="rec-uid" placeholder="Your user ID" autocomplete="username"/></div>
+            <div class="fg"><label>Password</label><input type="password" id="rec-pw" placeholder="Your password" autocomplete="current-password"/></div>
+            <button class="btn btn-p" style="width:100%" id="rec-btn" onclick="submitLobby('recordings')">Access Recordings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- classroom UI -->
+    <div id="dc-cl-ui" class="hid">
+      <div class="cl-ui">
+        <div class="cl-hd"><div><h2 style="color:#fff">🎓 Live Classroom</h2><p style="font-size:.8rem;color:var(--t3)" id="cl-uname"></p></div><button class="btn btn-g btn-sm" onclick="leaveSession('classroom')">← Exit Session</button></div>
+        <div class="vid-grid" id="vid-grid"><div class="vbox" id="loc-vbox"><video id="loc-vid" autoplay muted playsinline></video><div class="vlbl">You</div></div></div>
+        <div class="cc" id="call-ctrls">
+          <button class="cctrl cg" id="btn-cam" onclick="startCamera()">📷 Start Camera</button>
+          <button class="cctrl cgr hid" id="btn-mute" onclick="toggleMute()">🎤 Mute</button>
+          <button class="cctrl cgr hid" id="btn-camoff" onclick="toggleCam()">📷 Cam Off</button>
+          <button class="cctrl cgr hid" id="btn-rec" onclick="toggleRecording()">⏺ Record</button>
+          <button class="cctrl cr hid" id="btn-end" onclick="endCall()">📵 End</button>
+        </div>
+        <div class="chat-pnl">
+          <div class="chat-ttl">💬 Class Chat</div>
+          <div class="chat-msgs" id="chat-msgs"></div>
+          <div class="chat-in"><input id="chat-inp" placeholder="Type a message..." onkeypress="if(event.key==='Enter')sendChat()"/><button onclick="sendChat()">Send</button></div>
+        </div>
+      </div>
+    </div>
+    <!-- conference UI -->
+    <div id="dc-conf-ui" class="hid">
+      <div class="conf-ui">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">
+          <div><h2 style="color:#fff">📹 Conference Room</h2><p style="font-size:.8rem;color:var(--t3)" id="conf-uname"></p></div>
+          <button class="btn btn-g btn-sm" onclick="leaveSession('conference')">← Exit</button>
+        </div>
+        <div class="zoom-box">
+          <h3 style="color:#fff;margin-bottom:7px">Meeting Link</h3>
+          <p style="font-size:.85rem;color:var(--t2);margin-bottom:14px">Click below to join via Zoom or Google Meet.</p>
+          <div class="zoom-link-txt" id="zoom-link-txt">No meeting link set. Contact admin.</div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-p" onclick="joinConf()">🚀 Join Conference</button>
+            <button class="btn btn-g" onclick="copyZoom()">📋 Copy Link</button>
+          </div>
+        </div>
+        <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px">
+          <h4 style="color:#fff;margin-bottom:10px;font-size:.92rem">Conference Tips</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:7px">
+            <li style="font-size:.85rem;color:var(--t2);display:flex;gap:8px">📝 Ensure Zoom or Google Meet is installed before joining.</li>
+            <li style="font-size:.85rem;color:var(--t2);display:flex;gap:8px">🔇 Keep your microphone muted until asked to speak.</li>
+            <li style="font-size:.85rem;color:var(--t2);display:flex;gap:8px">🌐 Use a stable internet connection for best experience.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- recordings UI -->
+    <div id="dc-rec-ui" class="hid">
+      <div class="rec-ui">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">
+          <div><h2 style="color:#fff">🎬 Recorded Sessions</h2><p style="font-size:.8rem;color:var(--t3)" id="rec-uname"></p></div>
+          <button class="btn btn-g btn-sm" onclick="leaveSession('recordings')">← Exit</button>
+        </div>
+        <div id="rec-grid" class="rec-grid"><div class="es"><div class="ei">🎬</div><p>No recordings available yet.</p></div></div>
+      </div>
+    </div>
+  </div></section>
+</div>
+<!-- ADMIN PAGE -->
+<div id="pg-admin" class="page">
+  <div class="adm-wrap">
+    <div class="adm-side">
+      <div class="side-sec">Overview</div>
+      <div class="side-item act" onclick="aTab('dashboard')"><span class="ico">📊</span> Dashboard</div>
+      <div class="side-sec">Content</div>
+      <div class="side-item" onclick="aTab('about')"><span class="ico">ℹ️</span> About</div>
+      <div class="side-item" onclick="aTab('team')"><span class="ico">👥</span> Team</div>
+      <div class="side-item" onclick="aTab('projects')"><span class="ico">🚀</span> Projects</div>
+      <div class="side-item" onclick="aTab('services')"><span class="ico">⚙️</span> Services</div>
+      <div class="side-item" onclick="aTab('blogs')"><span class="ico">📝</span> Blogs</div>
+      <div class="side-item" onclick="aTab('announcements')"><span class="ico">📢</span> Announcements</div>
+      <div class="side-item" onclick="aTab('media')"><span class="ico">🖼️</span> Gallery</div>
+      <div class="side-sec">Digital Class</div>
+      <div class="side-item" onclick="aTab('credentials')"><span class="ico">🔑</span> Credentials</div>
+      <div class="side-item" onclick="aTab('conflink')"><span class="ico">🔗</span> Conf. Link</div>
+      <div class="side-sec">Communication</div>
+      <div class="side-item" onclick="aTab('messages')"><span class="ico">✉️</span> Messages</div>
+      <div class="side-sec">Account</div>
+      <div class="side-item" style="color:var(--red)" onclick="logout()"><span class="ico">🚪</span> Logout</div>
+    </div>
+    <div class="adm-main">
+      <!-- DASHBOARD -->
+      <div id="ap-dashboard" class="apnl act">
+        <div class="apnl-hd"><h2>Dashboard</h2></div>
+        <div class="dash-cards">
+          <div class="dc2"><div class="dc2-ico">🚀</div><div class="dc2-num" id="d-proj">—</div><div class="dc2-lbl">Projects</div></div>
+          <div class="dc2"><div class="dc2-ico">📝</div><div class="dc2-num" id="d-blog">—</div><div class="dc2-lbl">Blogs</div></div>
+          <div class="dc2"><div class="dc2-ico">📢</div><div class="dc2-num" id="d-ann">—</div><div class="dc2-lbl">Announcements</div></div>
+          <div class="dc2"><div class="dc2-ico">👥</div><div class="dc2-num" id="d-team">—</div><div class="dc2-lbl">Team</div></div>
+          <div class="dc2"><div class="dc2-ico">⚙️</div><div class="dc2-num" id="d-svc">—</div><div class="dc2-lbl">Services</div></div>
+          <div class="dc2"><div class="dc2-ico">🖼️</div><div class="dc2-num" id="d-med">—</div><div class="dc2-lbl">Media</div></div>
+          <div class="dc2"><div class="dc2-ico">✉️</div><div class="dc2-num" id="d-msg">—</div><div class="dc2-lbl">Messages</div></div>
+          <div class="dc2"><div class="dc2-ico">🔑</div><div class="dc2-num" id="d-cred">—</div><div class="dc2-lbl">Credentials</div></div>
+        </div>
+        <div style="background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:18px"><h4 style="color:#fff;margin-bottom:7px">Welcome, Admin</h4><p style="font-size:.86rem;color:var(--t2)">Use the sidebar to manage all content on the AIRA website. Changes appear live on the public site.</p></div>
+      </div>
+      <!-- ABOUT ADMIN -->
+      <div id="ap-about" class="apnl">
+        <div class="apnl-hd"><h2>About – Content</h2></div>
+        <div class="aa-sec"><div class="aa-sec-t">Mission Statement</div><textarea id="adm-mission" rows="4" placeholder="Enter mission statement..."></textarea><button class="btn btn-p btn-sm" style="margin-top:8px" onclick="saveMission()">Save Mission</button></div>
+        <div class="aa-sec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div class="aa-sec-t" style="margin-bottom:0">History Timeline</div><button class="btn btn-p btn-sm" onclick="openForm('history')">+ Add Entry</button></div><div id="adm-tl"></div></div>
+        <div class="aa-sec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div class="aa-sec-t" style="margin-bottom:0">Mission Cards</div><button class="btn btn-p btn-sm" onclick="openForm('missioncard')">+ Add Card</button></div><div id="adm-mc" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:11px"></div></div>
+        <div class="aa-sec"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div class="aa-sec-t" style="margin-bottom:0">Core Values</div><button class="btn btn-p btn-sm" onclick="openForm('value')">+ Add Value</button></div><div id="adm-vals" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:11px"></div></div>
+      </div>
+      <!-- TEAM ADMIN -->
+      <div id="ap-team" class="apnl"><div class="apnl-hd"><h2>Team Members</h2><button class="btn btn-p btn-sm" onclick="openForm('team')">+ Add Member</button></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Photo</th><th>Name</th><th>Role</th><th>Cat</th><th>Actions</th></tr></thead><tbody id="atbl-team"></tbody></table></div></div>
+      <!-- PROJECTS ADMIN -->
+      <div id="ap-projects" class="apnl"><div class="apnl-hd"><h2>Projects</h2><button class="btn btn-p btn-sm" onclick="openForm('project')">+ Add Project</button></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Title</th><th>Status</th><th>Timeline</th><th>Tags</th><th>Actions</th></tr></thead><tbody id="atbl-proj"></tbody></table></div></div>
+      <!-- SERVICES ADMIN -->
+      <div id="ap-services" class="apnl"><div class="apnl-hd"><h2>Services</h2><button class="btn btn-p btn-sm" onclick="openForm('service')">+ Add Service</button></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Icon</th><th>Title</th><th>Order</th><th>Actions</th></tr></thead><tbody id="atbl-svc"></tbody></table></div></div>
+      <!-- BLOGS ADMIN -->
+      <div id="ap-blogs" class="apnl"><div class="apnl-hd"><h2>Blogs / Articles</h2><button class="btn btn-p btn-sm" onclick="openForm('blog')">+ Add Blog</button></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Title</th><th>Cat</th><th>Author</th><th>Status</th><th>Actions</th></tr></thead><tbody id="atbl-blog"></tbody></table></div></div>
+      <!-- ANN ADMIN -->
+      <div id="ap-announcements" class="apnl"><div class="apnl-hd"><h2>Announcements</h2><button class="btn btn-p btn-sm" onclick="openForm('announcement')">+ Add</button></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Title</th><th>Type</th><th>Priority</th><th>Date</th><th>Actions</th></tr></thead><tbody id="atbl-ann"></tbody></table></div></div>
+      <!-- MEDIA ADMIN -->
+      <div id="ap-media" class="apnl"><div class="apnl-hd"><h2>Gallery / Media</h2><button class="btn btn-p btn-sm" onclick="openForm('media')">+ Add Media</button></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Preview</th><th>Title</th><th>Cat</th><th>Date</th><th>Actions</th></tr></thead><tbody id="atbl-med"></tbody></table></div></div>
+      <!-- CREDENTIALS ADMIN -->
+      <div id="ap-credentials" class="apnl"><div class="apnl-hd"><h2>Session Credentials</h2><button class="btn btn-p btn-sm" onclick="openForm('credential')">+ Add Credential</button></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Name</th><th>Type</th><th>User ID</th><th>Status</th><th>Last Used</th><th>Actions</th></tr></thead><tbody id="atbl-cred"></tbody></table></div></div>
+      <!-- CONF LINK ADMIN -->
+      <div id="ap-conflink" class="apnl"><div class="apnl-hd"><h2>Conference Link</h2></div><div style="max-width:480px"><div class="fg"><label>Zoom / Google Meet URL</label><input type="url" id="adm-zoom" placeholder="https://zoom.us/j/... or https://meet.google.com/..."/></div><button class="btn btn-p" onclick="saveZoomLink()">Save Link</button><p style="font-size:.8rem;color:var(--t3);margin-top:10px">This link is shown to users who have valid conference credentials.</p></div></div>
+      <!-- MESSAGES ADMIN -->
+      <div id="ap-messages" class="apnl"><div class="apnl-hd"><h2>Messages</h2></div><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Date</th><th>Actions</th></tr></thead><tbody id="atbl-msg"></tbody></table></div></div>
+    </div>
+  </div>
+</div>
+<!-- FOOTER -->
+<footer id="ft">
+  <div class="ft-grid">
+    <div class="ft-brand"><div class="logo"><div class="logo-mark">AI</div><div><div class="logo-name">AIRA</div><div class="logo-sub">Research Academy</div></div></div><p>Advancing research, technology, and innovation for sustainable development in Nepal and South Asia.</p></div>
+    <div class="ft-col"><h4>Organisation</h4><span class="fl" onclick="go('about')">About AIRA</span><span class="fl" onclick="go('team')">Our Team</span><span class="fl" onclick="go('projects')">Projects</span><span class="fl" onclick="go('services')">Services</span></div>
+    <div class="ft-col"><h4>Resources</h4><span class="fl" onclick="go('blogs')">Blog</span><span class="fl" onclick="go('ann')">Announcements</span><span class="fl" onclick="go('gallery')">Gallery</span><span class="fl" onclick="go('contact')">Contact</span></div>
+    <div class="ft-col"><h4>Digital Class</h4><span class="fl" onclick="openGateAndGo('classroom')">Classroom</span><span class="fl" onclick="openGateAndGo('conference')">Conference</span><span class="fl" onclick="openGateAndGo('recordings')">Recordings</span></div>
+  </div>
+  <div class="ft-bottom"><span>© 2025 AIRA – Axon Infotech Research Academy. All rights reserved.</span><span>Built with ❤️ in Nepal</span></div>
+</footer>
+<!-- ADMIN LOGIN MODAL -->
+<div id="mod-login" class="modal-bd hid">
+  <div class="modal-box" style="max-width:400px">
+    <div class="al-hd"><div class="al-ico">🔐</div><h2>Admin Login</h2><p style="font-size:.86rem;color:var(--t2);margin-top:4px">Sign in to manage AIRA content</p></div>
+    <div class="modal-body">
+      <div id="adm-err" class="lob-err hid"></div>
+      <div class="fg"><label>Username</label><input id="adm-u" placeholder="admin" autocomplete="username"/></div>
+      <div class="fg"><label>Password</label><input type="password" id="adm-p" placeholder="Your password" autocomplete="current-password"/></div>
+      <button class="btn btn-p" style="width:100%" id="adm-login-btn" onclick="adminLogin()">Sign In</button>
+    </div>
+    <div class="modal-ft" style="justify-content:center"><button class="btn btn-g btn-sm" onclick="closeModal('mod-login')">Cancel</button></div>
+  </div>
+</div>
+<!-- FORM MODAL -->
+<div id="mod-form" class="modal-bd hid">
+  <div class="modal-box">
+    <div class="modal-hd"><h3 id="form-ttl">Add Item</h3><button class="cbtn" onclick="closeModal('mod-form')">✕</button></div>
+    <div class="modal-body" id="form-body"></div>
+    <div class="modal-ft"><button class="btn btn-g btn-sm" onclick="closeModal('mod-form')">Cancel</button><button class="btn btn-p btn-sm" id="form-save" onclick="saveForm()">Save</button></div>
+  </div>
+</div>
+<!-- MSG VIEW MODAL -->
+<div id="mod-msg" class="modal-bd hid">
+  <div class="modal-box"><div class="modal-hd"><h3>Message</h3><button class="cbtn" onclick="closeModal('mod-msg')">✕</button></div><div class="modal-body" id="msg-body"></div><div class="modal-ft"><button class="btn btn-g btn-sm" onclick="closeModal('mod-msg')">Close</button></div></div>
+</div>
+
+<script>
+'use strict';
+// ── CONFIG ──────────────────────────────────
+const API = (window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1')
+  ? 'http://localhost:3001/api' : '/api';
+const PK = '8aae08c772b3016e4c6d', PC = 'ap2';
+
+// ── STATE ────────────────────────────────────
+const S = {
+  tok: localStorage.getItem('aira_tok')||null,
+  isAdm: false,
+  data: { ann:[], blogs:[], projects:[], services:[], team:[], media:[], about:{}, messages:[], credentials:[], stats:{} },
+  flt: { team:'all', proj:'all', blog:'all', ann:'all', gal:'all' },
+  editId: null, editType: null,
+  dc: { classroom:false, conference:false, recordings:false },
+  dcName: { classroom:'', conference:'', recordings:'' },
+  localStream:null, isMuted:false, isCamOff:false, isRec:false,
+  mediaRec:null, recChunks:[],
+  pusher:null, channel:null,
+  zoom: localStorage.getItem('aira_zoom')||''
+};
+
+// ── UTILS ────────────────────────────────────
+const $  = id => document.getElementById(id);
+const e  = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fd = d => d ? new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '';
+
+async function api(path, opts={}) {
+  const h = {'Content-Type':'application/json'};
+  if (S.tok) h['Authorization'] = 'Bearer '+S.tok;
+  const ctrl = new AbortController();
+  const t = setTimeout(()=>ctrl.abort(), 30000);
+  try {
+    const r = await fetch(API+path, {...opts, headers:{...h,...(opts.headers||{})}, signal:ctrl.signal});
+    clearTimeout(t);
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.message||`Error ${r.status}`);
+    return j;
+  } catch(err) { clearTimeout(t); throw err; }
+}
+
+function toast(msg, type='i', dur=3400) {
+  const el = document.createElement('div');
+  el.className = `ti ${type}`;
+  const ic = {s:'✅',e:'❌',i:'ℹ️'};
+  el.innerHTML = `<span>${ic[type]||'ℹ️'}</span><span>${e(msg)}</span>`;
+  $('toast').appendChild(el);
+  setTimeout(()=>el.remove(), dur);
+}
+
+// ── NAVIGATION ───────────────────────────────
+const PAGES = ['home','about','team','projects','services','blogs','ann','gallery','contact','dc','admin'];
+function go(page) {
+  if (page==='admin' && !S.isAdm) { openAdminLogin(); return; }
+  PAGES.forEach(p => { const el = $(`pg-${p}`); if(el) el.classList.remove('active'); });
+  const tgt = $(`pg-${page}`); if(!tgt) return;
+  tgt.classList.add('active');
+  window.scrollTo(0,0);
+  $('ft').style.display = (page==='admin')?'none':'';
+  if (page==='admin') { loadAdmData(); aTab('dashboard'); }
+}
+function goM(p) { toggleMnav(); go(p); }
+function openGateGoM(t) { toggleMnav(); openGateAndGo(t); }
+function toggleMnav() { $('mnav').classList.toggle('open'); }
+
+// ── DATA ─────────────────────────────────────
+async function fetchAll() {
+  const calls = [
+    api('/announcements'), api('/blogs'), api('/projects'), api('/services'),
+    api('/team'), api('/media'), api('/about'), api('/stats')
+  ];
+  const res = await Promise.allSettled(calls);
+  const keys = ['ann','blogs','projects','services','team','media','about','stats'];
+  res.forEach((r,i) => {
+    if (r.status==='fulfilled') {
+      const key = keys[i];
+      if (key==='about'||key==='stats') S.data[key] = r.value.data||{};
+      else S.data[key] = r.value.data||[];
+    }
+  });
+  renderAll();
+  updateTicker();
+  if (S.tok) checkTok();
+}
+
+function renderAll() {
+  renderHomeStats(); renderHomeAnn(); renderHomeBlogs();
+  renderAbout(); renderTeam(); renderProj(); renderSvc();
+  renderBlogs(); renderAnn(); renderGal();
+}
+
+// ── HOME ─────────────────────────────────────
+function renderHomeStats() {
+  const p=S.data.projects.filter(x=>!x.hidden).length;
+  const b=S.data.blogs.filter(x=>!x.hidden&&x.status==='published').length;
+  const t=S.data.team.length;
+  const st=S.data.stats;
+  const setN=(id,v)=>{ const el=$(id); if(el) el.textContent=v; };
+  setN('hs-p', p||st.projects||'20+');
+  setN('hs-t', t||st.team||'50+');
+  setN('hs-b', b||st.blogs||'100+');
+  setN('ss-y', st.years||'7+');
+  setN('ss-p', (p||st.projects||20)+(p?'+':''));
+  setN('ss-t', (t||st.team||50)+(t?'+':''));
+  setN('ss-b', (b||st.blogs||100)+(b?'+':''));
+}
+function updateTicker() {
+  const u = S.data.ann.filter(a=>!a.hidden&&a.priority==='urgent').slice(0,4);
+  if (u.length) $('tick-t').textContent = u.map(a=>'📢 '+a.title).join('  •  ')+'  •  ';
+}
+function renderHomeAnn() {
+  const list=S.data.ann.filter(a=>!a.hidden).slice(0,5);
+  const el=$('h-ann'); if(!el) return;
+  if(!list.length){el.innerHTML='<p style="color:var(--t3);font-size:.86rem">No announcements yet.</p>';return;}
+  el.innerHTML=list.map(a=>`<div class="ann-mini"><div class="t" onclick="go('ann')">${e(a.title)}</div><div class="m"><span class="badge ${a.priority==='urgent'?'br':a.priority==='important'?'bo':'bg'}">${e(a.priority)}</span> ${e(a.date||'')}</div></div>`).join('');
+}
+function renderHomeBlogs() {
+  const list=S.data.blogs.filter(b=>!b.hidden&&b.status==='published').slice(0,5);
+  const el=$('h-blogs'); if(!el) return;
+  if(!list.length){el.innerHTML='<p style="color:var(--t3);font-size:.86rem">No articles yet.</p>';return;}
+  el.innerHTML=list.map(b=>`<div class="blog-mini"><div class="th">${e(b.emoji||'📝')}</div><div><div class="t" onclick="openBlogDetail('${e(b._id)}')">${e(b.title)}</div><div class="m">${e(b.author)} · ${e(b.date||'')}</div></div></div>`).join('');
+}
+// ── ABOUT ────────────────────────────────────
+function renderAbout() {
+  const a=S.data.about||{};
+  const mEl=$('ab-mission'); if(mEl) mEl.textContent=a.mission||'Our mission is to advance research, technology, and innovation for sustainable development in Nepal and South Asia.';
+  // timeline
+  const tl=$('ab-tl');
+  if(tl){ if(!a.history||!a.history.length){tl.innerHTML='<div class="es"><div class="ei">📅</div><p>No history entries yet.</p></div>';}
+  else tl.innerHTML=a.history.map(h=>`<div class="tl-item"><div class="tl-year">${e(h.year)}</div><h4>${e(h.title)}</h4><p>${e(h.desc)}</p></div>`).join(''); }
+  // mission cards
+  const mc=$('ab-mc');
+  if(mc) mc.innerHTML=(a.missionCards||[]).map(c=>`<div class="mc-card"><div style="font-size:2rem;margin-bottom:8px">${e(c.icon||'🎯')}</div><h4 style="font-size:.92rem;color:#fff;margin-bottom:5px">${e(c.title)}</h4><p style="font-size:.8rem;color:var(--t2)">${e(c.desc)}</p></div>`).join('');
+  // values
+  const vg=$('ab-vals');
+  if(vg){ if(!a.values||!a.values.length){vg.innerHTML='<div class="es"><div class="ei">💎</div><p>No values added yet.</p></div>';}
+  else vg.innerHTML=a.values.map(v=>`<div class="val-card"><div style="font-size:1.7rem;margin-bottom:8px">${e(v.icon||'💎')}</div><h4 style="font-size:.88rem;color:#fff;margin-bottom:5px">${e(v.name)}</h4><p style="font-size:.8rem;color:var(--t2)">${e(v.desc)}</p></div>`).join(''); }
+}
+// ── TEAM ─────────────────────────────────────
+function renderTeam() {
+  let list=S.data.team;
+  if(S.flt.team!=='all') list=list.filter(m=>m.cat===S.flt.team);
+  const g=$('team-grid'); if(!g) return;
+  if(!list.length){g.innerHTML='<div class="es"><div class="ei">👥</div><p>No members found.</p></div>';return;}
+  g.innerHTML=list.map(m=>`<div class="tc"><div class="tc-photo">${m.photo?`<img src="${e(m.photo)}" alt="${e(m.name)}" loading="lazy"/>`:'<div style="font-size:3.5rem">👤</div>'}</div><div class="tc-body"><h3>${e(m.name)}</h3><div class="tc-role">${e(m.role)}</div><div class="tc-bio">${e(m.bio)}</div><div style="display:flex;flex-wrap:wrap;gap:4px">${(m.expertise||[]).map(ex=>`<span class="chip">${e(ex)}</span>`).join('')}</div></div></div>`).join('');
+}
+function ftTeam(f,el){ S.flt.team=f; document.querySelectorAll('.tt').forEach(t=>t.classList.remove('act')); el.classList.add('act'); renderTeam(); }
+// ── PROJECTS ─────────────────────────────────
+function renderProj() {
+  let list=S.data.projects.filter(p=>!p.hidden);
+  if(S.flt.proj!=='all') list=list.filter(p=>p.pstatus===S.flt.proj);
+  const g=$('proj-grid'); if(!g) return;
+  if(!list.length){g.innerHTML='<div class="es"><div class="ei">🚀</div><p>No projects found.</p></div>';return;}
+  g.innerHTML=list.map(p=>`<div class="pcard"><div class="p-emoji">${e(p.emoji||'🚀')}</div><div style="display:flex;align-items:center;gap:9px;margin-bottom:7px"><h3 style="margin:0;font-size:.97rem;color:#fff">${e(p.title)}</h3><span class="badge ${p.pstatus==='current'?'bg':'bor'}">${e(p.pstatus)}</span></div><p style="font-size:.85rem;color:var(--t2);margin-bottom:14px;line-height:1.62">${e(p.desc)}</p><div class="p-meta">${p.timeline?`<div class="p-meta-row"><strong>Timeline:</strong>${e(p.timeline)}</div>`:''} ${p.method?`<div class="p-meta-row"><strong>Method:</strong>${e(p.method)}</div>`:''} ${p.partners?`<div class="p-meta-row"><strong>Partners:</strong>${e(p.partners)}</div>`:''} ${p.impact?`<div class="p-meta-row"><strong>Impact:</strong>${e(p.impact)}</div>`:''}</div><div>${(p.tags||[]).map(t=>`<span class="chip">${e(t)}</span> `).join('')}</div></div>`).join('');
+}
+function ftProj(f,el){ S.flt.proj=f; document.querySelectorAll('.pt').forEach(t=>t.classList.remove('act')); el.classList.add('act'); renderProj(); }
+// ── SERVICES ─────────────────────────────────
+function renderSvc() {
+  const list=S.data.services.filter(s=>!s.hidden).sort((a,b)=>(a.order||0)-(b.order||0));
+  const g=$('svc-grid'); if(!g) return;
+  if(!list.length){g.innerHTML='<div class="es"><div class="ei">⚙️</div><p>No services yet.</p></div>';return;}
+  g.innerHTML=list.map(s=>`<div class="sc"><div class="sc-icon">${e(s.icon||'⚙️')}</div><h3 style="font-size:1.05rem;color:#fff;margin-bottom:9px">${e(s.title)}</h3><p style="font-size:.86rem;color:var(--t2);line-height:1.65;margin-bottom:12px">${e(s.desc)}</p>${s.features&&s.features.length?`<ul class="svc-feats">${s.features.map(f=>`<li>${e(f)}</li>`).join('')}</ul>`:''} ${s.link?`<a href="${e(s.link)}" target="_blank" class="btn btn-o btn-sm" style="margin-top:12px">Learn More →</a>`:''}</div>`).join('');
+}
+// ── BLOGS ────────────────────────────────────
+function renderBlogs() {
+  let list=S.data.blogs.filter(b=>!b.hidden&&b.status==='published');
+  if(S.flt.blog!=='all') list=list.filter(b=>b.cat===S.flt.blog);
+  list=list.sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0));
+  const g=$('blog-grid'); if(!g) return;
+  if(!list.length){g.innerHTML='<div class="es"><div class="ei">📝</div><p>No articles found.</p></div>';return;}
+  g.innerHTML=list.map(b=>`<div class="bc"><div class="bc-img">${b.img?`<img src="${e(b.img)}" alt="${e(b.title)}" loading="lazy"/>`:e(b.emoji||'📝')}</div><div class="bc-body">${b.pinned?'<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(241,196,15,.1);border:1px solid rgba(241,196,15,.2);border-radius:100px;padding:2px 9px;font-size:.68rem;color:var(--gold);margin-bottom:5px">📌 Pinned</div>':''}<div class="bc-cat">${e(b.cat||'')}</div><h3 onclick="openBlogDetail('${e(b._id)}')">${e(b.title)}</h3><div class="bc-exc">${e(b.excerpt)}</div><div class="bc-ft"><span>${e(b.author||'')}</span><span>${e(b.date||'')}</span></div></div></div>`).join('');
+}
+function ftBlog(f,el){ S.flt.blog=f; document.querySelectorAll('.bf').forEach(t=>t.classList.remove('act')); el.classList.add('act'); renderBlogs(); }
+function openBlogDetail(id) {
+  const b=S.data.blogs.find(x=>x._id===id); if(!b) return;
+  $('ov-cat').textContent=b.cat||'';
+  $('ov-title').textContent=b.title||'';
+  $('ov-meta').textContent=`${b.author||''} • ${b.date||''}`;
+  $('ov-content').textContent=b.content||b.excerpt||'';
+  $('blog-ov').classList.remove('hid');
+}
+function closeBlogOv(ev){ if(!ev||ev.target===$('blog-ov')) $('blog-ov').classList.add('hid'); }
+// ── ANNOUNCEMENTS ─────────────────────────────
+function renderAnn() {
+  let list=S.data.ann.filter(a=>!a.hidden);
+  if(S.flt.ann!=='all') list=list.filter(a=>a.atype===S.flt.ann);
+  const c=$('ann-list'); if(!c) return;
+  if(!list.length){c.innerHTML='<div class="es"><div class="ei">📢</div><p>No announcements found.</p></div>';return;}
+  c.innerHTML=list.map(a=>`<div class="ann-card ${e(a.priority)}"><div style="display:flex;gap:8px;margin-bottom:7px"><span class="badge ${a.priority==='urgent'?'br':a.priority==='important'?'bo':'bg'}">${e(a.priority)}</span><span class="badge bor">${e(a.atype)}</span></div><h3>${e(a.title)}</h3><div class="ann-content">${e(a.content)}</div><div class="ann-ft"><span style="font-size:.76rem;color:var(--t3)">${e(a.date||'')}</span>${a.link?`<a href="${e(a.link)}" target="_blank" class="btn btn-o btn-sm">Learn More →</a>`:''}</div></div>`).join('');
+}
+function ftAnn(f,el){ S.flt.ann=f; document.querySelectorAll('.af').forEach(t=>t.classList.remove('act')); el.classList.add('act'); renderAnn(); }
+// ── GALLERY ──────────────────────────────────
+function renderGal() {
+  let list=S.data.media;
+  if(S.flt.gal!=='all') list=list.filter(m=>m.cat===S.flt.gal);
+  const g=$('gal-grid'); if(!g) return;
+  if(!list.length){g.innerHTML='<div class="es"><div class="ei">🖼️</div><p>No gallery items yet.</p></div>';return;}
+  g.innerHTML=list.map(m=>`<div class="gi" onclick="openLb('${e(m.url)}','${e(m.title)}')">${m.url&&(m.url.startsWith('data:')||m.url.startsWith('http'))?`<img src="${e(m.url)}" alt="${e(m.title)}" loading="lazy"/>`:'<div class="gi-ph">🖼️</div>'}<div class="gi-ov"><p>${e(m.title)}</p></div></div>`).join('');
+}
+function ftGal(f,el){ S.flt.gal=f; document.querySelectorAll('.gf').forEach(t=>t.classList.remove('act')); el.classList.add('act'); renderGal(); }
+function openLb(url,cap){ if(!url||url==='#') return; $('lb-img').src=url; $('lb-cap').textContent=cap||''; $('lb').classList.remove('hid'); }
+function closeLb(){ $('lb').classList.add('hid'); }
+// ── CONTACT ──────────────────────────────────
+async function submitContact(ev) {
+  ev.preventDefault();
+  const btn=$('c-sub'); btn.disabled=true; btn.textContent='Sending...';
+  try {
+    await api('/messages',{method:'POST',body:JSON.stringify({name:$('c-name').value.trim(),email:$('c-email').value.trim(),subject:$('c-subject').value.trim(),message:$('c-msg').value.trim()})});
+    toast('Message sent successfully! We will get back to you soon.','s');
+    ['c-name','c-email','c-subject','c-msg'].forEach(id=>$(id).value='');
+  } catch(err){toast('Failed: '+err.message,'e');}
+  btn.disabled=false; btn.textContent='Send Message';
+}
+// ── DIGITAL CLASS ─────────────────────────────
+function openGateAndGo(type){ go('dc'); openGate(type); }
+function openGate(type) {
+  if(S.dc[type]){ showDCUI(type); return; }
+  $('dc-rooms').classList.add('hid');
+  $('dc-gate').classList.remove('hid');
+  ['classroom','conference','recordings'].forEach(t=>$(`lob-${t}`).classList.add('hid'));
+  $(`lob-${type}`).classList.remove('hid');
+  setTimeout(()=>$(type==='classroom'?'cl-uid':type==='conference'?'conf-uid':'rec-uid')?.focus(),80);
+}
+function backToRooms(){
+  $('dc-gate').classList.add('hid');
+  ['classroom','conference','recordings'].forEach(t=>{ $(`lob-${t}`).classList.add('hid'); $((`dc-${t==='classroom'?'cl':t==='conference'?'conf':'rec'}-ui`)).classList.add('hid'); });
+  $('dc-rooms').classList.remove('hid');
+  if(S.localStream){ S.localStream.getTracks().forEach(t=>t.stop()); S.localStream=null; }
+}
+async function submitLobby(type) {
+  const pfx = type==='classroom'?'cl':type==='conference'?'conf':'rec';
+  const uid = $(`${pfx}-uid`)?.value.trim();
+  const pw  = $(`${pfx}-pw`)?.value.trim();
+  const errEl = $(`lerr-${type}`);
+  const btn   = $(`${pfx}-btn`);
+  if(errEl){ errEl.classList.add('hid'); errEl.textContent=''; }
+  if(!uid||!pw){ if(errEl){errEl.textContent='Enter both User ID and Password.';errEl.classList.remove('hid');} return; }
+  btn.disabled=true; btn.textContent='Verifying...';
+  try {
+    const res = await api('/credentials/verify',{method:'POST',body:JSON.stringify({type,userid:uid,password:pw})});
+    if(res.success){
+      S.dc[type]=true; S.dcName[type]=res.name||uid;
+      toast(`Welcome, ${res.name||uid}! ✅`,'s');
+      $('dc-gate').classList.add('hid');
+      $(`lob-${type}`).classList.add('hid');
+      showDCUI(type);
+    }
+  } catch(err){
+    if(errEl){errEl.textContent=err.message||'Invalid credentials. Please try again.';errEl.classList.remove('hid');}
+  }
+  btn.disabled=false;
+  btn.textContent=type==='classroom'?'Enter Classroom':type==='conference'?'Enter Conference':'Access Recordings';
+}
+function showDCUI(type) {
+  ['classroom','conference','recordings'].forEach(t=>{ const pfx2=t==='classroom'?'cl':t==='conference'?'conf':'rec'; $(`dc-${pfx2}-ui`).classList.add('hid'); });
+  $('dc-rooms').classList.add('hid');
+  $('dc-gate').classList.add('hid');
+  const pfx=type==='classroom'?'cl':type==='conference'?'conf':'rec';
+  $(`dc-${pfx}-ui`).classList.remove('hid');
+  if(type==='classroom'){ $('cl-uname').textContent='Logged in as: '+S.dcName.classroom; initPusher(); }
+  if(type==='conference'){ $('conf-uname').textContent='Logged in as: '+S.dcName.conference; loadZoom(); }
+  if(type==='recordings'){ $('rec-uname').textContent='Logged in as: '+S.dcName.recordings; }
+}
+function leaveSession(type){ S.dc[type]=false; backToRooms(); toast('Session ended.','i'); }
+function loadZoom(){
+  const lk=localStorage.getItem('aira_zoom')||'';
+  $('zoom-link-txt').textContent=lk||'No meeting link set. Contact admin.';
+}
+function joinConf(){
+  const lk=$('zoom-link-txt').textContent;
+  if(!lk||lk.includes('No meeting')){ toast('No meeting link set. Contact admin.','e'); return; }
+  window.open(lk,'_blank');
+}
+function copyZoom(){
+  const lk=$('zoom-link-txt').textContent;
+  if(!lk||lk.includes('No meeting')){ toast('No link to copy.','e'); return; }
+  navigator.clipboard.writeText(lk).then(()=>toast('Link copied!','s'));
+}
+// ── PUSHER / WebRTC ──────────────────────────
+function initPusher(){
+  if(S.pusher) return;
+  try {
+    Pusher.logToConsole=false;
+    S.pusher=new Pusher(PK,{cluster:PC});
+    S.channel=S.pusher.subscribe('presence-aira-classroom');
+    S.channel.bind('pusher:subscription_succeeded',()=>addChat('System','Connected to classroom.'));
+    S.channel.bind('pusher:member_added',m=>addChat('System',`${m.info?.name||'User'} joined.`));
+    S.channel.bind('pusher:member_removed',m=>addChat('System',`${m.info?.name||'User'} left.`));
+    S.channel.bind('client-chat',d=>addChat(d.name||'User',d.msg||''));
+  } catch(err){ addChat('System','Could not connect to live channel.'); }
+}
+async function startCamera(){
+  try {
+    S.localStream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+    $('loc-vid').srcObject=S.localStream;
+    $('btn-cam').classList.add('hid');
+    ['btn-mute','btn-camoff','btn-rec','btn-end'].forEach(id=>$(id).classList.remove('hid'));
+    toast('Camera started','s');
+  } catch(err){ toast('Camera/mic error: '+err.message,'e'); }
+}
+function toggleMute(){
+  if(!S.localStream) return;
+  S.isMuted=!S.isMuted;
+  S.localStream.getAudioTracks().forEach(t=>t.enabled=!S.isMuted);
+  $('btn-mute').textContent=S.isMuted?'🔇 Unmute':'🎤 Mute';
+  $('btn-mute').className=S.isMuted?'cctrl cr':'cctrl cgr';
+}
+function toggleCam(){
+  if(!S.localStream) return;
+  S.isCamOff=!S.isCamOff;
+  S.localStream.getVideoTracks().forEach(t=>t.enabled=!S.isCamOff);
+  $('btn-camoff').textContent=S.isCamOff?'📷 Cam On':'📷 Cam Off';
+}
+function toggleRecording(){
+  if(!S.localStream) return;
+  if(!S.isRec){
+    S.recChunks=[];
+    S.mediaRec=new MediaRecorder(S.localStream);
+    S.mediaRec.ondataavailable=ev=>S.recChunks.push(ev.data);
+    S.mediaRec.onstop=()=>{
+      const blob=new Blob(S.recChunks,{type:'video/webm'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download=`aira-${Date.now()}.webm`; a.click();
+      toast('Recording saved!','s');
+    };
+    S.mediaRec.start(); S.isRec=true;
+    $('btn-rec').textContent='⏹ Stop'; $('btn-rec').className='cctrl cr';
+    toast('Recording started','i');
+  } else {
+    S.mediaRec.stop(); S.isRec=false;
+    $('btn-rec').textContent='⏺ Record'; $('btn-rec').className='cctrl cgr';
+  }
+}
+function endCall(){
+  if(S.localStream){S.localStream.getTracks().forEach(t=>t.stop());S.localStream=null;}
+  if(S.isRec&&S.mediaRec){S.mediaRec.stop();S.isRec=false;}
+  S.isMuted=false;S.isCamOff=false;
+  $('loc-vid').srcObject=null;
+  $('btn-cam').classList.remove('hid');
+  ['btn-mute','btn-camoff','btn-rec','btn-end'].forEach(id=>$(id).classList.add('hid'));
+  toast('Call ended','i');
+}
+function sendChat(){
+  const inp=$('chat-inp'); const msg=inp.value.trim(); if(!msg) return;
+  addChat(S.dcName.classroom||'Me',msg);
+  try{ if(S.channel) S.channel.trigger('client-chat',{name:S.dcName.classroom||'Me',msg}); }catch(e){}
+  inp.value='';
+}
+function addChat(name,msg){
+  const c=$('chat-msgs'); if(!c) return;
+  const d=document.createElement('div'); d.className='cm';
+  d.innerHTML=`<strong>${e(name)}:</strong> ${e(msg)}`;
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+// ── ADMIN AUTH ────────────────────────────────
+function openAdminLogin(){
+  if(S.isAdm){go('admin');return;}
+  $('mod-login').classList.remove('hid');
+  $('adm-err').classList.add('hid');
+  setTimeout(()=>$('adm-u')?.focus(),80);
+}
+async function adminLogin(){
+  const u=$('adm-u').value.trim(), p=$('adm-p').value;
+  const btn=$('adm-login-btn'), err=$('adm-err');
+  err.classList.add('hid');
+  if(!u||!p){err.textContent='Enter username and password';err.classList.remove('hid');return;}
+  btn.disabled=true; btn.textContent='Signing in...';
+  try {
+    const res=await api('/auth/login',{method:'POST',body:JSON.stringify({username:u,password:p})});
+    S.tok=res.token; S.isAdm=true;
+    localStorage.setItem('aira_tok',res.token);
+    closeModal('mod-login');
+    toast('Welcome back, Admin! 👋','s');
+    go('admin');
+  } catch(err2){ err.textContent=err2.message||'Invalid credentials'; err.classList.remove('hid'); }
+  btn.disabled=false; btn.textContent='Sign In';
+}
+async function checkTok(){
+  if(!S.tok) return;
+  try{ await api('/auth/me'); S.isAdm=true; }
+  catch(e){ S.tok=null; S.isAdm=false; localStorage.removeItem('aira_tok'); }
+}
+function logout(){
+  S.tok=null; S.isAdm=false; localStorage.removeItem('aira_tok');
+  toast('Logged out','i'); go('home');
+}
+// ── ADMIN PANEL ───────────────────────────────
+function aTab(id){
+  document.querySelectorAll('.apnl').forEach(p=>p.classList.remove('act'));
+  document.querySelectorAll('.side-item').forEach(i=>i.classList.remove('act'));
+  const pnl=$(`ap-${id}`); if(pnl) pnl.classList.add('act');
+  document.querySelectorAll('.side-item').forEach(i=>{ if(i.getAttribute('onclick')&&i.getAttribute('onclick').includes(`'${id}'`)) i.classList.add('act'); });
+  loadPnlData(id);
+}
+async function loadAdmData(){
+  if(!S.isAdm) return;
+  const [msgs,creds]=await Promise.allSettled([api('/messages'),api('/credentials')]);
+  if(msgs.status==='fulfilled') S.data.messages=msgs.value.data||[];
+  if(creds.status==='fulfilled') S.data.credentials=creds.value.data||[];
+  updDash();
+}
+function updDash(){
+  const d=S.data;
+  [['d-proj',d.projects.length],['d-blog',d.blogs.length],['d-ann',d.ann.length],
+   ['d-team',d.team.length],['d-svc',d.services.length],['d-med',d.media.length],
+   ['d-msg',d.messages.length],['d-cred',d.credentials.length]].forEach(([id,v])=>{const el=$(id);if(el)el.textContent=v;});
+}
+function loadPnlData(id){
+  if(id==='about') rAdmAbout();
+  else if(id==='team') rAdmTbl('team','atbl-team');
+  else if(id==='projects') rAdmTbl('projects','atbl-proj');
+  else if(id==='services') rAdmTbl('services','atbl-svc');
+  else if(id==='blogs') rAdmTbl('blogs','atbl-blog');
+  else if(id==='announcements') rAdmTbl('ann','atbl-ann');
+  else if(id==='media') rAdmTbl('media','atbl-med');
+  else if(id==='credentials') rAdmTbl('credentials','atbl-cred');
+  else if(id==='messages') rAdmMsgs();
+  else if(id==='conflink'){ const z=localStorage.getItem('aira_zoom')||''; if($('adm-zoom'))$('adm-zoom').value=z; }
+  else if(id==='dashboard') updDash();
+}
+function aBtn(editFn,delFn){ return `<div class="tdact"><button class="btn btn-o btn-sm" onclick="${editFn}">✏️</button><button class="btn btn-d btn-sm" onclick="${delFn}">🗑️</button></div>`; }
+function rAdmTbl(key,tbodyId){
+  const body=$(tbodyId); if(!body) return;
+  const map={team:S.data.team,projects:S.data.projects,services:S.data.services,blogs:S.data.blogs,ann:S.data.ann,media:S.data.media,credentials:S.data.credentials};
+  const list=map[key]||[];
+  if(!list.length){body.innerHTML=`<tr><td colspan="10" style="text-align:center;color:var(--t3);padding:30px">No items yet.</td></tr>`;return;}
+  const rows={
+    team:m=>`<tr><td>${m.photo?`<img src="${e(m.photo)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover" loading="lazy"/>`:' 👤'}</td><td style="color:#fff;font-weight:500">${e(m.name)}</td><td>${e(m.role)}</td><td><span class="badge bg">${e(m.cat)}</span></td><td>${aBtn(`eItem('team','${m._id}')`,`dItem('team','${m._id}')`)}</td></tr>`,
+    projects:p=>`<tr><td style="color:#fff;font-weight:500">${e(p.emoji)} ${e(p.title)}</td><td><span class="badge ${p.pstatus==='current'?'bg':'bor'}">${e(p.pstatus)}</span></td><td style="font-size:.78rem">${e(p.timeline||'—')}</td><td>${(p.tags||[]).map(t=>`<span class="chip">${e(t)}</span>`).join(' ')}</td><td>${aBtn(`eItem('project','${p._id}')`,`dItem('project','${p._id}')`)}</td></tr>`,
+    services:s=>`<tr><td style="font-size:1.4rem">${e(s.icon)}</td><td style="color:#fff;font-weight:500">${e(s.title)}</td><td>${s.order||0}</td><td>${aBtn(`eItem('service','${s._id}')`,`dItem('service','${s._id}')`)}</td></tr>`,
+    blogs:b=>`<tr><td style="color:#fff;font-weight:500">${e(b.emoji||'📝')} ${e(b.title)}</td><td><span class="badge bor">${e(b.cat)}</span></td><td>${e(b.author)}</td><td><span class="badge ${b.status==='published'?'bg':'bo'}">${e(b.status)}</span></td><td>${aBtn(`eItem('blog','${b._id}')`,`dItem('blog','${b._id}')`)}</td></tr>`,
+    ann:a=>`<tr><td style="color:#fff;font-weight:500">${e(a.title)}</td><td><span class="badge bor">${e(a.atype)}</span></td><td><span class="badge ${a.priority==='urgent'?'br':'bo'}">${e(a.priority)}</span></td><td style="font-size:.78rem">${e(a.date||'—')}</td><td>${aBtn(`eItem('announcement','${a._id}')`,`dItem('announcement','${a._id}')`)}</td></tr>`,
+    media:m=>`<tr><td>${m.url?`<img src="${e(m.url)}" style="width:44px;height:44px;object-fit:cover;border-radius:6px" loading="lazy"/>`:' 🖼️'}</td><td style="color:#fff;font-weight:500">${e(m.title)}</td><td><span class="badge bg">${e(m.cat)}</span></td><td style="font-size:.78rem">${e(m.date||'—')}</td><td>${aBtn(`eItem('media','${m._id}')`,`dItem('media','${m._id}')`)}</td></tr>`,
+    credentials:c=>`<tr><td style="color:#fff;font-weight:500">${e(c.name)}</td><td><span class="badge bor">${e(c.type)}</span></td><td style="font-family:monospace;font-size:.8rem">${e(c.userid)}</td><td><span class="badge ${c.active?'bg':'br'}">${c.active?'Active':'Inactive'}</span>${c.locked?'<span class="badge br" style="margin-left:4px">Locked</span>':''}</td><td style="font-size:.8rem">${e(c.lastUsed||'—')}</td><td>${aBtn(`eItem('credential','${c._id}')`,`dItem('credential','${c._id}')`)}</td></tr>`,
+  };
+  const rowFn=rows[key]; if(!rowFn) return;
+  body.innerHTML=list.map(rowFn).join('');
+}
+function rAdmMsgs(){
+  const body=$('atbl-msg'); if(!body) return;
+  if(!S.data.messages.length){body.innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:30px">No messages yet.</td></tr>`;return;}
+  body.innerHTML=S.data.messages.map(m=>`<tr><td>${e(m.name)}</td><td>${e(m.email)}</td><td style="color:#fff">${e(m.subject||'(no subject)')}</td><td style="font-size:.78rem">${e(m.date||fd(m.createdAt)||'—')}</td><td><div class="tdact"><button class="btn btn-o btn-sm" onclick="viewMsg('${m._id}')">👁️</button><button class="btn btn-d btn-sm" onclick="delMsg('${m._id}')">🗑️</button></div></td></tr>`).join('');
+}
+function rAdmAbout(){
+  const a=S.data.about||{};
+  if($('adm-mission')) $('adm-mission').value=a.mission||'';
+  // timeline
+  const tl=$('adm-tl'); if(tl) tl.innerHTML=(a.history||[]).map(h=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:var(--sur);border:1px solid var(--bdr);border-radius:8px;margin-bottom:7px"><span style="font-size:.86rem;color:var(--t1)"><strong style="color:var(--acc)">${e(h.year)}</strong> – ${e(h.title)}</span><button class="btn btn-d btn-sm" onclick="delAbout('history','${h._id}')">🗑️</button></div>`).join('')||'<p style="color:var(--t3);font-size:.84rem">No entries.</p>';
+  // mission cards
+  const mc=$('adm-mc'); if(mc) mc.innerHTML=(a.missionCards||[]).map(c=>`<div style="background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:12px;text-align:center"><div style="font-size:1.4rem">${e(c.icon)}</div><div style="font-size:.83rem;color:#fff;margin:4px 0">${e(c.title)}</div><button class="btn btn-d btn-sm" style="margin-top:7px" onclick="delAbout('missioncards','${c._id}')">🗑️</button></div>`).join('');
+  // values
+  const vl=$('adm-vals'); if(vl) vl.innerHTML=(a.values||[]).map(v=>`<div style="background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:12px;text-align:center"><div style="font-size:1.4rem">${e(v.icon)}</div><div style="font-size:.83rem;color:#fff;margin:4px 0">${e(v.name)}</div><button class="btn btn-d btn-sm" style="margin-top:7px" onclick="delAbout('values','${v._id}')">🗑️</button></div>`).join('');
+}
+async function saveMission(){
+  try{ const res=await api('/about/mission',{method:'PUT',body:JSON.stringify({mission:$('adm-mission').value})}); S.data.about=res.data; renderAbout(); rAdmAbout(); toast('Mission saved!','s'); }
+  catch(err){ toast('Error: '+err.message,'e'); }
+}
+async function delAbout(subtype,id){
+  if(!confirm('Delete?')) return;
+  try{ const res=await api(`/about/${subtype}/${id}`,{method:'DELETE'}); S.data.about=res.data; renderAbout(); rAdmAbout(); toast('Deleted!','s'); }
+  catch(err){ toast('Error: '+err.message,'e'); }
+}
+// ── MODAL FORMS ───────────────────────────────
+const FORMS={
+  team:`<div class="fg"><label>Full Name *</label><input id="fm-name" placeholder="Full name"/></div><div class="fg"><label>Role *</label><input id="fm-role" placeholder="e.g. Executive Director"/></div><div class="fg"><label>Category</label><select id="fm-cat"><option value="board">Board</option><option value="leadership">Leadership</option><option value="research">Research</option></select></div><div class="fg"><label>Bio *</label><textarea id="fm-bio" rows="3" placeholder="Short biography..."></textarea></div><div class="fg"><label>Expertise (comma separated)</label><input id="fm-expertise" placeholder="Data Science, Policy, AI"/></div><div class="fg"><label>Photo URL or leave blank</label><input id="fm-photo" placeholder="https://..."/></div><div class="fg"><label>Or Upload Photo</label><input type="file" id="fm-photo-file" accept="image/*"/></div><div class="fg"><label>Display Order</label><input type="number" id="fm-order" value="0"/></div>`,
+  project:`<div class="fg"><label>Title *</label><input id="fm-title" placeholder="Project title"/></div><div style="display:flex;gap:12px"><div class="fg" style="flex:0 0 80px"><label>Emoji</label><input id="fm-emoji" placeholder="🚀"/></div><div class="fg" style="flex:1"><label>Status</label><select id="fm-pstatus"><option value="current">Current</option><option value="past">Past</option></select></div></div><div class="fg"><label>Timeline</label><input id="fm-timeline" placeholder="e.g. 2023-2025"/></div><div class="fg"><label>Description *</label><textarea id="fm-desc" rows="3"></textarea></div><div class="fg"><label>Method</label><input id="fm-method" placeholder="Research methodology"/></div><div class="fg"><label>Partners</label><input id="fm-partners" placeholder="Partner organizations"/></div><div class="fg"><label>Impact</label><input id="fm-impact" placeholder="Expected/achieved impact"/></div><div class="fg"><label>Tags (comma separated)</label><input id="fm-tags" placeholder="health, data, policy"/></div><div class="fg"><label>Date</label><input id="fm-date" placeholder="January 2024"/></div>`,
+  service:`<div class="fg"><label>Title *</label><input id="fm-title" placeholder="Service name"/></div><div style="display:flex;gap:12px"><div class="fg" style="flex:0 0 80px"><label>Icon (emoji)</label><input id="fm-icon" placeholder="⚙️"/></div><div class="fg" style="flex:0 0 90px"><label>Order</label><input type="number" id="fm-order" value="0"/></div></div><div class="fg"><label>Description *</label><textarea id="fm-desc" rows="3"></textarea></div><div class="fg"><label>Features (one per line)</label><textarea id="fm-features" rows="4" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea></div><div class="fg"><label>Link (optional)</label><input type="url" id="fm-link" placeholder="https://..."/></div>`,
+  blog:`<div class="fg"><label>Title *</label><input id="fm-title" placeholder="Article title"/></div><div style="display:flex;gap:12px"><div class="fg" style="flex:0 0 80px"><label>Emoji</label><input id="fm-emoji" placeholder="📝"/></div><div class="fg" style="flex:1"><label>Category</label><select id="fm-cat"><option value="national">National</option><option value="international">International</option><option value="research">Research</option><option value="policy">Policy</option><option value="tech">Tech</option><option value="event">Event</option></select></div><div class="fg" style="flex:1"><label>Status</label><select id="fm-status"><option value="published">Published</option><option value="draft">Draft</option></select></div></div><div style="display:flex;gap:12px"><div class="fg" style="flex:1"><label>Author</label><input id="fm-author" placeholder="Admin" value="Admin"/></div><div class="fg" style="flex:1"><label>Date</label><input id="fm-date" placeholder="June 2025"/></div></div><div class="fg"><label>Excerpt *</label><textarea id="fm-excerpt" rows="3" placeholder="Short summary (max 500 chars)"></textarea></div><div class="fg"><label>Full Content</label><textarea id="fm-content" rows="6" placeholder="Full article..."></textarea></div><div class="fg"><label>Image URL (optional)</label><input id="fm-img" placeholder="https://..."/></div><div style="display:flex;gap:12px"><div class="fg" style="flex:1"><label>Tags (comma separated)</label><input id="fm-tags" placeholder="research, nepal"/></div><div class="fg" style="flex:0 0 110px"><label>Pinned?</label><select id="fm-pinned"><option value="false">No</option><option value="true">Yes</option></select></div></div>`,
+  announcement:`<div class="fg"><label>Title *</label><input id="fm-title" placeholder="Announcement title"/></div><div style="display:flex;gap:12px"><div class="fg" style="flex:1"><label>Priority</label><select id="fm-priority"><option value="normal">Normal</option><option value="important">Important</option><option value="urgent">Urgent</option></select></div><div class="fg" style="flex:1"><label>Type</label><select id="fm-atype"><option value="general">General</option><option value="event">Event</option><option value="training">Training</option><option value="vacancy">Vacancy</option><option value="publication">Publication</option><option value="award">Award</option></select></div></div><div class="fg"><label>Content *</label><textarea id="fm-content" rows="4"></textarea></div><div style="display:flex;gap:12px"><div class="fg" style="flex:1"><label>Date</label><input id="fm-date" placeholder="15 June 2025"/></div><div class="fg" style="flex:1"><label>Link (optional)</label><input id="fm-link" placeholder="https://..."/></div></div>`,
+  media:`<div class="fg"><label>Title *</label><input id="fm-title" placeholder="Photo/media title"/></div><div class="fg"><label>Category</label><select id="fm-cat"><option value="photo">Photo</option><option value="event">Event</option><option value="research">Research</option><option value="team">Team</option><option value="document">Document</option></select></div><div class="fg"><label>Image URL</label><input id="fm-url" placeholder="https://..."/></div><div class="fg"><label>Or Upload Image</label><input type="file" id="fm-img-file" accept="image/*"/></div><div class="fg"><label>Caption</label><input id="fm-caption" placeholder="Image caption"/></div><div class="fg"><label>Date</label><input id="fm-date" placeholder="March 2025"/></div>`,
+  credential:`<div class="fg"><label>Display Name *</label><input id="fm-name" placeholder="e.g. Student A or Group 1"/></div><div class="fg"><label>Session Type *</label><select id="fm-type"><option value="classroom">Classroom</option><option value="conference">Conference</option><option value="recordings">Recordings</option></select></div><div class="fg"><label>User ID *</label><input id="fm-userid" placeholder="e.g. student@aira"/></div><div class="fg"><label>Password *</label><input type="password" id="fm-pw" placeholder="Set a strong password"/></div><div style="display:flex;gap:12px"><div class="fg" style="flex:1"><label>Max Attempts</label><input type="number" id="fm-max" value="5"/></div><div class="fg" style="flex:1"><label>Active?</label><select id="fm-active"><option value="true">Yes</option><option value="false">No</option></select></div></div><div class="fg"><label>Notes (optional)</label><input id="fm-notes" placeholder="Optional notes"/></div>`,
+  history:`<div style="display:flex;gap:12px"><div class="fg" style="flex:0 0 110px"><label>Year *</label><input id="fm-year" placeholder="2018"/></div><div class="fg" style="flex:1"><label>Title *</label><input id="fm-title" placeholder="Milestone title"/></div></div><div class="fg"><label>Description *</label><textarea id="fm-desc" rows="3"></textarea></div>`,
+  missioncard:`<div style="display:flex;gap:12px"><div class="fg" style="flex:0 0 80px"><label>Icon *</label><input id="fm-icon" placeholder="🎯"/></div><div class="fg" style="flex:1"><label>Title *</label><input id="fm-title" placeholder="Card title"/></div></div><div class="fg"><label>Description *</label><textarea id="fm-desc" rows="3"></textarea></div>`,
+  value:`<div style="display:flex;gap:12px"><div class="fg" style="flex:0 0 80px"><label>Icon *</label><input id="fm-icon" placeholder="💎"/></div><div class="fg" style="flex:1"><label>Value Name *</label><input id="fm-name" placeholder="Innovation"/></div></div><div class="fg"><label>Description *</label><textarea id="fm-desc" rows="3"></textarea></div>`,
+};
+const FORM_TITLES={ team:'Team Member', project:'Project', service:'Service', blog:'Blog / Article', announcement:'Announcement', media:'Gallery / Media', credential:'Session Credential', history:'History Entry', missioncard:'Mission Card', value:'Core Value' };
+
+function openForm(type, data={}){
+  S.editType=type; S.editId=data._id||null;
+  $('form-ttl').textContent=(S.editId?'Edit ':'Add ')+( FORM_TITLES[type]||type);
+  $('form-body').innerHTML=FORMS[type]||'<p>Form not configured.</p>';
+  if(S.editId) prefill(type,data);
+  $('mod-form').classList.remove('hid');
+}
+function prefill(type,data){
+  const v=(id,val)=>{const el=$(id);if(el)el.value=val||'';};
+  if(type==='team'){v('fm-name',data.name);v('fm-role',data.role);if($('fm-cat'))$('fm-cat').value=data.cat||'board';v('fm-bio',data.bio);v('fm-expertise',(data.expertise||[]).join(', '));v('fm-photo',data.photo||'');v('fm-order',data.order||0);}
+  else if(type==='project'){v('fm-title',data.title);v('fm-emoji',data.emoji);if($('fm-pstatus'))$('fm-pstatus').value=data.pstatus||'current';v('fm-timeline',data.timeline);v('fm-desc',data.desc);v('fm-method',data.method);v('fm-partners',data.partners);v('fm-impact',data.impact);v('fm-tags',(data.tags||[]).join(', '));v('fm-date',data.date);}
+  else if(type==='service'){v('fm-title',data.title);v('fm-icon',data.icon);v('fm-order',data.order||0);v('fm-desc',data.desc);v('fm-features',(data.features||[]).join('\n'));v('fm-link',data.link||'');}
+  else if(type==='blog'){v('fm-title',data.title);v('fm-emoji',data.emoji);if($('fm-cat'))$('fm-cat').value=data.cat||'national';v('fm-author',data.author||'Admin');if($('fm-status'))$('fm-status').value=data.status||'published';v('fm-excerpt',data.excerpt);v('fm-content',data.content);v('fm-img',data.img);v('fm-tags',(data.tags||[]).join(', '));v('fm-date',data.date);if($('fm-pinned'))$('fm-pinned').value=data.pinned?'true':'false';}
+  else if(type==='announcement'){v('fm-title',data.title);if($('fm-priority'))$('fm-priority').value=data.priority||'normal';if($('fm-atype'))$('fm-atype').value=data.atype||'general';v('fm-content',data.content);v('fm-date',data.date);v('fm-link',data.link||'');}
+  else if(type==='media'){v('fm-title',data.title);if($('fm-cat'))$('fm-cat').value=data.cat||'photo';v('fm-url',data.url);v('fm-caption',data.caption);v('fm-date',data.date);}
+  else if(type==='credential'){v('fm-name',data.name);if($('fm-type'))$('fm-type').value=data.type||'classroom';v('fm-userid',data.userid);v('fm-max',data.maxAttempts||5);if($('fm-active'))$('fm-active').value=data.active?'true':'false';v('fm-notes',data.notes||'');}
+}
+async function saveForm(){
+  const t=S.editType; const btn=$('form-save');
+  btn.disabled=true; btn.textContent='Saving...';
+  try {
+    let body={};
+    if(t==='team'){
+      let photo=($('fm-photo')||{}).value||'';
+      const ff=$('fm-photo-file'); if(ff&&ff.files&&ff.files[0]) photo=await b64(ff.files[0]);
+      body={name:$('fm-name')?.value,role:$('fm-role')?.value,cat:$('fm-cat')?.value||'board',bio:$('fm-bio')?.value,expertise:$('fm-expertise')?.value.split(',').map(s=>s.trim()).filter(Boolean),order:parseInt($('fm-order')?.value)||0,photo};
+    } else if(t==='project'){
+      body={title:$('fm-title')?.value,emoji:$('fm-emoji')?.value||'🚀',pstatus:$('fm-pstatus')?.value||'current',timeline:$('fm-timeline')?.value,desc:$('fm-desc')?.value,method:$('fm-method')?.value,partners:$('fm-partners')?.value,impact:$('fm-impact')?.value,tags:$('fm-tags')?.value.split(',').map(s=>s.trim()).filter(Boolean),date:$('fm-date')?.value};
+    } else if(t==='service'){
+      body={title:$('fm-title')?.value,icon:$('fm-icon')?.value||'⚙️',order:parseInt($('fm-order')?.value)||0,desc:$('fm-desc')?.value,features:$('fm-features')?.value.split('\n').map(s=>s.trim()).filter(Boolean),link:$('fm-link')?.value};
+    } else if(t==='blog'){
+      body={title:$('fm-title')?.value,emoji:$('fm-emoji')?.value||'📝',cat:$('fm-cat')?.value||'national',author:$('fm-author')?.value||'Admin',status:$('fm-status')?.value||'published',excerpt:$('fm-excerpt')?.value,content:$('fm-content')?.value,img:$('fm-img')?.value,tags:$('fm-tags')?.value.split(',').map(s=>s.trim()).filter(Boolean),date:$('fm-date')?.value,pinned:$('fm-pinned')?.value==='true'};
+    } else if(t==='announcement'){
+      body={title:$('fm-title')?.value,priority:$('fm-priority')?.value||'normal',atype:$('fm-atype')?.value||'general',content:$('fm-content')?.value,date:$('fm-date')?.value,link:$('fm-link')?.value};
+    } else if(t==='media'){
+      let url=($('fm-url')||{}).value||'';
+      const if2=$('fm-img-file'); if(if2&&if2.files&&if2.files[0]) url=await b64(if2.files[0]);
+      body={title:$('fm-title')?.value,cat:$('fm-cat')?.value||'photo',url,caption:$('fm-caption')?.value,date:$('fm-date')?.value};
+    } else if(t==='credential'){
+      body={name:$('fm-name')?.value,type:$('fm-type')?.value||'classroom',userid:$('fm-userid')?.value,maxAttempts:parseInt($('fm-max')?.value)||5,active:$('fm-active')?.value==='true',notes:$('fm-notes')?.value};
+      const pw=$('fm-pw')?.value; if(pw) body.password=pw;
+    } else if(t==='history'){
+      body={year:$('fm-year')?.value,title:$('fm-title')?.value,desc:$('fm-desc')?.value};
+    } else if(t==='missioncard'){
+      body={icon:$('fm-icon')?.value||'🎯',title:$('fm-title')?.value,desc:$('fm-desc')?.value};
+    } else if(t==='value'){
+      body={icon:$('fm-icon')?.value||'💎',name:$('fm-name')?.value,desc:$('fm-desc')?.value};
+    }
+    // about sub-types
+    if(['history','missioncard','value'].includes(t)){
+      const ep=t==='history'?'/about/history':t==='missioncard'?'/about/missioncards':'/about/values';
+      const res=await api(ep,{method:'POST',body:JSON.stringify(body)});
+      S.data.about=res.data; renderAbout(); rAdmAbout();
+    } else {
+      const EPS={team:'/team',project:'/projects',service:'/services',blog:'/blogs',announcement:'/announcements',media:'/media',credential:'/credentials'};
+      const ep=EPS[t]; if(!ep) throw new Error('Unknown type: '+t);
+      if(S.editId){ await api(`${ep}/${S.editId}`,{method:'PUT',body:JSON.stringify(body)}); }
+      else { await api(ep,{method:'POST',body:JSON.stringify(body)}); }
+      await refresh(t);
+    }
+    toast((S.editId?'Updated':'Created')+' successfully!','s');
+    closeModal('mod-form'); renderAll();
+    if(S.isAdm) updDash();
+  } catch(err){ toast('Error: '+err.message,'e'); }
+  btn.disabled=false; btn.textContent='Save';
+}
+async function refresh(type){
+  const M={team:['/team','team'],project:['/projects','projects'],service:['/services','services'],blog:['/blogs','blogs'],announcement:['/announcements','ann'],media:['/media','media'],credential:['/credentials','credentials']};
+  const [ep,key]=M[type]||[]; if(!ep) return;
+  const res=await api(ep); S.data[key]=res.data||[];
+  // re-render admin table
+  const TBL={team:'atbl-team',projects:'atbl-proj',services:'atbl-svc',blogs:'atbl-blog',ann:'atbl-ann',media:'atbl-med',credentials:'atbl-cred'};
+  if(TBL[key]) rAdmTbl(key,TBL[key]);
+}
+function eItem(type,id){
+  const M={team:S.data.team,project:S.data.projects,service:S.data.services,blog:S.data.blogs,announcement:S.data.ann,media:S.data.media,credential:S.data.credentials};
+  const list=M[type]||[]; const item=list.find(x=>x._id===id); if(item) openForm(type,item);
+}
+async function dItem(type,id){
+  if(!confirm('Delete this item?')) return;
+  const EPS={team:'/team',project:'/projects',service:'/services',blog:'/blogs',announcement:'/announcements',media:'/media',credential:'/credentials'};
+  const ep=EPS[type]; if(!ep) return;
+  try{ await api(`${ep}/${id}`,{method:'DELETE'}); await refresh(type); renderAll(); updDash(); toast('Deleted!','s'); }
+  catch(err){ toast('Delete failed: '+err.message,'e'); }
+}
+// Messages
+function viewMsg(id){
+  const m=S.data.messages.find(x=>x._id===id); if(!m) return;
+  $('msg-body').innerHTML=`<div style="display:flex;flex-direction:column;gap:12px"><div><strong style="color:var(--t3);font-size:.76rem">FROM</strong><p>${e(m.name)} &lt;${e(m.email)}&gt;</p></div><div><strong style="color:var(--t3);font-size:.76rem">SUBJECT</strong><p>${e(m.subject||'(no subject)')}</p></div><div><strong style="color:var(--t3);font-size:.76rem">DATE</strong><p>${e(m.date||fd(m.createdAt)||'—')}</p></div><div><strong style="color:var(--t3);font-size:.76rem">MESSAGE</strong><p style="white-space:pre-wrap;color:var(--t2)">${e(m.message)}</p></div></div>`;
+  $('mod-msg').classList.remove('hid');
+}
+async function delMsg(id){
+  if(!confirm('Delete this message?')) return;
+  try{ await api(`/messages/${id}`,{method:'DELETE'}); S.data.messages=S.data.messages.filter(m=>m._id!==id); rAdmMsgs(); updDash(); toast('Deleted!','s'); }
+  catch(err){ toast('Error: '+err.message,'e'); }
+}
+async function saveZoomLink(){
+  const lk=($('adm-zoom')||{}).value?.trim()||'';
+  localStorage.setItem('aira_zoom',lk); S.zoom=lk;
+  toast('Conference link saved!','s');
+}
+// modal helpers
+function closeModal(id){ $(id).classList.add('hid'); if(id==='mod-form'){S.editId=null;S.editType=null;} }
+function b64(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
+
+// ESC / click-backdrop
+document.addEventListener('click',ev=>{
+  ['mod-login','mod-form','mod-msg'].forEach(id=>{ if(ev.target.id===id) closeModal(id); });
+  if(ev.target.id==='blog-ov') closeBlogOv();
+  if(ev.target.id==='lb') closeLb();
+});
+document.addEventListener('keydown',ev=>{
+  if(ev.key==='Escape'){ ['mod-login','mod-form','mod-msg'].forEach(closeModal); $('blog-ov').classList.add('hid'); $('lb').classList.add('hid'); }
+  if(ev.key==='Enter'){ const lm=$('mod-login'); if(lm&&!lm.classList.contains('hid')) adminLogin(); }
+});
+
+// ── INIT ──────────────────────────────────────
+async function init(){
+  go('home');
+  await fetchAll();
+  setTimeout(()=>{ const l=$('ldr'); if(l){l.classList.add('gone');setTimeout(()=>l.remove(),500);} }, 700);
+}
+init();
+
+</script>
+</body>
+</html>

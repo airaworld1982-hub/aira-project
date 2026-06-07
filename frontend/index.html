@@ -1053,7 +1053,7 @@ const S = {
   editId: null, editType: null,
   dc: { classroom:false, conference:false, recordings:false },
   dcName: { classroom:'', conference:'', recordings:'' },
-  localStream:null, isMuted:false, isCamOff:false, isRec:false,
+  localStream:null, screenStream:null, isMuted:false, isCamOff:false, isRec:false,
   mediaRec:null, recChunks:[],
   pusher:null, channel:null,
   zoom: localStorage.getItem('aira_zoom')||''
@@ -1518,8 +1518,18 @@ async function startCamera(){
     $('loc-vid').srcObject=S.localStream;
     $('btn-cam').classList.add('hid');
     ['btn-mute','btn-camoff','btn-share','btn-rec','btn-end'].forEach(id=>$(id).classList.remove('hid'));
-    toast('Camera started','s');
-  } catch(err){ toast('Camera/mic error: '+err.message,'e'); }
+    addSelfToParticipants();
+    toast('✅ Camera started','s');
+  } catch(err){
+    // Try audio-only if camera not available
+    try {
+      S.localStream=await navigator.mediaDevices.getUserMedia({video:false,audio:true});
+      $('btn-cam').classList.add('hid');
+      ['btn-mute','btn-share','btn-rec','btn-end'].forEach(id=>$(id).classList.remove('hid'));
+      addSelfToParticipants();
+      toast('🎤 Audio only (no camera)','i');
+    } catch(err2){ toast('❌ Media error: '+err.message,'e'); }
+  }
 }
 function toggleMute(){
   if(!S.localStream) return;
@@ -1563,6 +1573,290 @@ function endCall(){
   ['btn-mute','btn-camoff','btn-share','btn-rec','btn-end'].forEach(id=>$(id).classList.add('hid'));
   stopScreenShare();
   toast('Call ended','i');
+}
+
+// ── TAB SWITCHER ──────────────────────────────
+function switchClTab(name, el){
+  document.querySelectorAll('.cl-tab').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('.cl-panel').forEach(p=>p.classList.remove('act'));
+  if(el) el.classList.add('act');
+  const pnl = $('cl-panel-'+name);
+  if(pnl) pnl.classList.add('act');
+  if(name==='whiteboard') initWhiteboard();
+  if(name==='notes') initNotes();
+}
+
+// ── PARTICIPANT COUNTER ───────────────────────
+function updateParticipants(list){
+  const count = list ? list.length : 1;
+  const badge = $('participant-badge');
+  const countEl = $('participant-count');
+  const labelEl = $('participant-label');
+  const btnP    = $('btn-participants');
+  if(badge){ badge.style.display='flex'; }
+  if(countEl) countEl.textContent = count;
+  if(labelEl) labelEl.textContent = count===1 ? 'online' : 'online';
+  if(btnP) btnP.style.display='inline-flex';
+  // Update detail list
+  const detailCount = $('p-count-detail');
+  if(detailCount) detailCount.textContent = count;
+  const items = $('participant-items');
+  if(items && list){
+    items.innerHTML = list.map(p=>`
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bdr)">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--acc);flex-shrink:0"></div>
+        <span style="font-size:.85rem;color:var(--t1)">${e(p.name||p)}</span>
+        ${p.isYou?'<span class="badge bg" style="font-size:.65rem">You</span>':''}
+      </div>`).join('');
+  }
+}
+function toggleParticipantList(){
+  const pl = $('participant-list');
+  if(!pl) return;
+  pl.style.display = pl.style.display==='none'?'block':'none';
+}
+// Show self as participant when camera starts
+function addSelfToParticipants(){
+  const me = S.dcName.classroom || 'You';
+  updateParticipants([{name:me,isYou:true}]);
+}
+
+// ── SCREEN SHARE ──────────────────────────────
+async function toggleScreenShare(){
+  if(!S.screenStream){ await startScreenShare(); }
+  else { stopScreenShare(); }
+}
+async function startScreenShare(){
+  try {
+    S.screenStream = await navigator.mediaDevices.getDisplayMedia({
+      video:{ cursor:'always', displaySurface:'monitor' },
+      audio: true
+    });
+    // Show in screen panel
+    const vid = $('screen-vid');
+    const ph  = $('screen-ph');
+    if(vid){ vid.srcObject=S.screenStream; vid.style.display='block'; }
+    if(ph) ph.style.display='none';
+    // Update buttons
+    const btn  = $('btn-share');
+    const btn2 = $('btn-share2');
+    const btnStop = $('btn-stop-share');
+    if(btn){ btn.textContent='🖥️ Sharing...'; btn.className='cctrl cg'; }
+    if(btn2) btn2.style.display='none';
+    if(btnStop) btnStop.style.display='inline-flex';
+    // Switch to screen tab
+    switchClTab('screen', document.querySelectorAll('.cl-tab')[1]);
+    toast('🖥️ Screen sharing started','s');
+    // Stop when user clicks browser stop button
+    S.screenStream.getVideoTracks()[0].onended = ()=>{ stopScreenShare(); };
+  } catch(err){
+    if(err.name!=='NotAllowedError') toast('Screen share error: '+err.message,'e');
+    else toast('Screen share cancelled','i');
+  }
+}
+function stopScreenShare(){
+  if(!S.screenStream) return;
+  S.screenStream.getTracks().forEach(t=>t.stop());
+  S.screenStream=null;
+  const vid = $('screen-vid');
+  const ph  = $('screen-ph');
+  if(vid){ vid.srcObject=null; vid.style.display='none'; }
+  if(ph) ph.style.display='flex';
+  const btn  = $('btn-share');
+  const btn2 = $('btn-share2');
+  const btnStop = $('btn-stop-share');
+  if(btn){ btn.textContent='🖥️ Share Screen'; btn.className='cctrl cgr'; }
+  if(btn2) btn2.style.display='inline-flex';
+  if(btnStop) btnStop.style.display='none';
+  toast('Screen sharing stopped','i');
+}
+
+// ── WHITEBOARD ────────────────────────────────
+const WB = {
+  tool:'pen', color:'#000000', size:3,
+  drawing:false, history:[], redoStack:[],
+  startX:0, startY:0, snapshot:null
+};
+function initWhiteboard(){
+  const canvas = $('wb-canvas');
+  if(!canvas||canvas._init) return;
+  canvas._init=true;
+  // Set canvas width to container width
+  const wrap = canvas.parentElement;
+  canvas.width  = wrap ? wrap.clientWidth : 900;
+  canvas.height = 500;
+  // Fill white background
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  WB.history=[];
+  saveWbSnapshot();
+}
+function getWbCtx(){ return $('wb-canvas')?.getContext('2d'); }
+function wbPos(ev){
+  const canvas=$('wb-canvas');
+  const rect=canvas.getBoundingClientRect();
+  const scaleX=canvas.width/rect.width;
+  const scaleY=canvas.height/rect.height;
+  if(ev.touches){
+    return {
+      x:(ev.touches[0].clientX-rect.left)*scaleX,
+      y:(ev.touches[0].clientY-rect.top)*scaleY
+    };
+  }
+  return { x:(ev.clientX-rect.left)*scaleX, y:(ev.clientY-rect.top)*scaleY };
+}
+function saveWbSnapshot(){
+  const canvas=$('wb-canvas'); if(!canvas) return;
+  WB.history.push(canvas.toDataURL());
+  if(WB.history.length>30) WB.history.shift();
+  WB.redoStack=[];
+}
+function wbStart(ev){
+  ev.preventDefault();
+  const pos=wbPos(ev);
+  WB.drawing=true; WB.startX=pos.x; WB.startY=pos.y;
+  const ctx=getWbCtx(); if(!ctx) return;
+  // Save snapshot before drawing (for shapes)
+  const canvas=$('wb-canvas');
+  WB.snapshot=ctx.getImageData(0,0,canvas.width,canvas.height);
+  if(WB.tool==='pen'||WB.tool==='eraser'){
+    ctx.beginPath();
+    ctx.moveTo(pos.x,pos.y);
+  }
+  if(WB.tool==='text'){
+    const txt=prompt('Enter text:');
+    if(txt){
+      ctx.font=`${WB.size*6}px DM Sans, sans-serif`;
+      ctx.fillStyle=WB.color;
+      ctx.fillText(txt,pos.x,pos.y);
+      saveWbSnapshot();
+    }
+    WB.drawing=false;
+  }
+}
+function wbDraw(ev){
+  if(!WB.drawing) return;
+  ev.preventDefault();
+  const pos=wbPos(ev);
+  const ctx=getWbCtx(); if(!ctx) return;
+  const canvas=$('wb-canvas');
+  ctx.lineWidth   = WB.tool==='eraser'? WB.size*4 : WB.size;
+  ctx.strokeStyle = WB.tool==='eraser'? '#ffffff' : WB.color;
+  ctx.fillStyle   = WB.color;
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  if(WB.tool==='pen'||WB.tool==='eraser'){
+    ctx.lineTo(pos.x,pos.y);
+    ctx.stroke();
+  } else {
+    // Restore snapshot so shape doesn't stack
+    ctx.putImageData(WB.snapshot,0,0);
+    ctx.beginPath();
+    ctx.strokeStyle=WB.color;
+    ctx.lineWidth=WB.size;
+    if(WB.tool==='line'){
+      ctx.moveTo(WB.startX,WB.startY);
+      ctx.lineTo(pos.x,pos.y);
+      ctx.stroke();
+    } else if(WB.tool==='rect'){
+      ctx.strokeRect(WB.startX,WB.startY,pos.x-WB.startX,pos.y-WB.startY);
+    } else if(WB.tool==='circle'){
+      const rx=Math.abs(pos.x-WB.startX)/2;
+      const ry=Math.abs(pos.y-WB.startY)/2;
+      const cx=WB.startX+(pos.x-WB.startX)/2;
+      const cy=WB.startY+(pos.y-WB.startY)/2;
+      ctx.ellipse(cx,cy,rx,ry,0,0,2*Math.PI);
+      ctx.stroke();
+    }
+  }
+}
+function wbEnd(ev){
+  if(!WB.drawing) return;
+  WB.drawing=false;
+  saveWbSnapshot();
+}
+function wbTouchStart(ev){ wbStart(ev); }
+function wbTouchMove(ev){ wbDraw(ev); }
+function setWbTool(tool,btn){
+  WB.tool=tool;
+  document.querySelectorAll('.wb-tool-btn').forEach(b=>b.classList.remove('act'));
+  if(btn) btn.classList.add('act');
+}
+function setWbColor(color,el){
+  WB.color=color;
+  document.querySelectorAll('.wb-color').forEach(c=>c.classList.remove('act'));
+  if(el) el.classList.add('act');
+}
+function setWbSize(val){
+  WB.size=parseInt(val);
+  const lbl=$('wb-size-lbl'); if(lbl) lbl.textContent=val;
+}
+function wbUndo(){
+  if(WB.history.length<2) return;
+  WB.redoStack.push(WB.history.pop());
+  const img=new Image();
+  img.onload=()=>{
+    const ctx=getWbCtx();
+    const canvas=$('wb-canvas');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(img,0,0);
+  };
+  img.src=WB.history[WB.history.length-1];
+}
+function wbClear(){
+  if(!confirm('Clear whiteboard?')) return;
+  const ctx=getWbCtx(); const canvas=$('wb-canvas');
+  if(!ctx||!canvas) return;
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  saveWbSnapshot();
+  toast('Whiteboard cleared','i');
+}
+function wbSave(){
+  const canvas=$('wb-canvas'); if(!canvas) return;
+  const a=document.createElement('a');
+  a.href=canvas.toDataURL('image/png');
+  a.download='aira-whiteboard-'+Date.now()+'.png';
+  a.click();
+  toast('💾 Whiteboard saved as PNG','s');
+}
+
+// ── NOTES ─────────────────────────────────────
+function initNotes(){
+  const editor=$('notes-editor'); if(!editor) return;
+  const session=$('notes-session');
+  if(session) session.textContent = S.dcName.classroom||'Session';
+  // Load saved notes
+  const saved=localStorage.getItem('aira_notes_'+S.dcName.classroom);
+  if(saved && !editor.innerHTML) editor.innerHTML=saved;
+}
+function fmtNote(cmd,val){
+  document.execCommand(cmd,false,val||null);
+  $('notes-editor')?.focus();
+  autoSaveNotes();
+}
+function changeFontSize(val){
+  document.execCommand('fontSize',false,val);
+  $('notes-editor')?.focus();
+}
+function autoSaveNotes(){
+  const editor=$('notes-editor'); if(!editor) return;
+  localStorage.setItem('aira_notes_'+S.dcName.classroom, editor.innerHTML);
+}
+function clearNotes(){
+  if(!confirm('Clear all notes?')) return;
+  const editor=$('notes-editor'); if(!editor) return;
+  editor.innerHTML='';
+  localStorage.removeItem('aira_notes_'+S.dcName.classroom);
+  toast('Notes cleared','i');
+}
+function downloadNotes(){
+  const editor=$('notes-editor'); if(!editor) return;
+  const blob=new Blob(['<html><body style="font-family:sans-serif;max-width:800px;margin:40px auto">'+editor.innerHTML+'</body></html>'], {type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='aira-notes-'+Date.now()+'.html'; a.click();
+  toast('📥 Notes downloaded','s');
 }
 function sendChat(){
   const inp=$('chat-inp'); const msg=inp.value.trim(); if(!msg) return;

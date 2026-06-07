@@ -23,7 +23,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--t1);font-family:var(--ff2);font-size:15px;line-height:1.6;overflow-x:hidden;padding-top:100px}
+body{background:var(--bg);color:var(--t1);font-family:var(--ff2);font-size:15px;line-height:1.6;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 button{cursor:pointer;font-family:var(--ff2);border:none;outline:none}
@@ -60,7 +60,7 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .btn-sm{padding:5px 12px;font-size:.8rem}
 .btn-lg{padding:12px 28px;font-size:1rem}
 /* layout */
-.page{display:none;min-height:calc(100vh - 100px);animation:fadeUp .3s ease}
+.page{display:none;min-height:calc(100vh - 64px);animation:fadeUp .3s ease}
 .page.active{display:block}
 .con{max-width:1280px;margin:0 auto;padding:0 24px}
 .sec{padding:72px 0}
@@ -69,7 +69,7 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .sh .lbl{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .sh .lbl::before{content:'';display:block;width:22px;height:2px;background:var(--acc)}
 .sh h2{font-size:clamp(1.7rem,3.5vw,2.6rem);color:#fff;margin-bottom:14px}
-.sh p{color:var(--t2);max-width:580px;font-size:1.05rem}
+.sh p{color:var(--t2);max-width:580px;font-size:1rem}
 /* ticker */
 #ticker{background:linear-gradient(90deg,var(--acc2),var(--acc));overflow:hidden;height:30px;display:flex;align-items:center;position:fixed;top:0;left:0;right:0;z-index:1100}
 .tick-inner{display:flex;gap:0;white-space:nowrap;animation:tick 35s linear infinite}
@@ -77,19 +77,19 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .tick-label{background:var(--bg);color:var(--acc);padding:0 14px;margin-right:20px;font-family:var(--ff1);font-size:.7rem;letter-spacing:.12em;font-weight:700;flex-shrink:0;height:30px;display:flex;align-items:center}
 .tick-text{font-size:.78rem;font-weight:600;color:var(--bg)}
 /* navbar */
-#nav{position:fixed;top:30px;left:0;right:0;z-index:1000;background:rgba(4,16,10,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);height:70px}
-.nav-in{max-width:100%;margin:0 auto;display:flex;align-items:center;height:100%;padding:0 36px;gap:10px}
+#nav{position:fixed;top:30px;left:0;right:0;z-index:1000;background:rgba(4,16,10,.95);backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr);height:64px}
+.nav-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;height:100%;padding:0 24px;gap:8px}
 .logo{display:flex;align-items:center;gap:10px;margin-right:12px;cursor:pointer;flex-shrink:0}
-.logo-mark{width:48px;height:48px;background:linear-gradient(135deg,var(--acc2),var(--acc3));border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:var(--ff1);font-weight:800;font-size:1.1rem;color:#000;flex-shrink:0}
-.logo-name{font-family:var(--ff1);font-weight:800;font-size:1.35rem;color:#fff;letter-spacing:.04em}
-.logo-sub{font-size:.72rem;color:var(--t3);letter-spacing:.06em;text-transform:uppercase}
-.nav-links{display:flex;align-items:center;gap:4px;flex:1}
-.nl{padding:9px 16px;border-radius:9px;font-size:1rem;font-weight:600;color:var(--t2);transition:var(--tr);cursor:pointer;white-space:nowrap}
+.logo-mark{width:40px;height:40px;background:linear-gradient(135deg,var(--acc2),var(--acc3));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--ff1);font-weight:800;font-size:.95rem;color:#000;flex-shrink:0}
+.logo-name{font-family:var(--ff1);font-weight:800;font-size:1.1rem;color:#fff;letter-spacing:.04em}
+.logo-sub{font-size:.62rem;color:var(--t3);letter-spacing:.06em;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1}
+.nl{padding:7px 12px;border-radius:8px;font-size:.86rem;font-weight:500;color:var(--t2);transition:var(--tr);cursor:pointer;white-space:nowrap}
 .nl:hover,.nl.act{color:var(--acc);background:rgba(46,204,113,.08)}
 .dd{position:relative}
 .dd-menu{position:absolute;top:calc(100% + 8px);left:0;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);min-width:180px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:var(--tr);box-shadow:var(--sh2);z-index:99}
 .dd:hover .dd-menu{opacity:1;pointer-events:all;transform:none}
-.dd-item{display:block;padding:11px 18px;font-size:.95rem;color:var(--t2);cursor:pointer;transition:var(--tr)}
+.dd-item{display:block;padding:10px 16px;font-size:.85rem;color:var(--t2);cursor:pointer;transition:var(--tr)}
 .dd-item:hover{color:var(--acc);background:rgba(46,204,113,.06)}
 .nav-act{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
 .ham{display:none;flex-direction:column;gap:5px;padding:6px;cursor:pointer}
@@ -140,7 +140,7 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .si{text-align:center;padding:0 20px;position:relative}
 .si:not(:last-child)::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);height:48%;width:1px;background:var(--bdr)}
 .si-num{font-family:var(--ff1);font-size:2.5rem;font-weight:800;color:var(--acc);line-height:1}
-.si-lbl{font-size:.9rem;color:var(--t2);margin-top:5px}
+.si-lbl{font-size:.82rem;color:var(--t2);margin-top:5px}
 /* features */
 .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .feat-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);padding:30px;transition:var(--tr);position:relative;overflow:hidden}
@@ -148,19 +148,19 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .feat-card:hover{border-color:var(--bdr2);transform:translateY(-3px)}
 .feat-card:hover::after{transform:scaleX(1)}
 .feat-icon{font-size:2.2rem;margin-bottom:14px}
-.feat-card h3{font-size:1.1rem;color:#fff;margin-bottom:8px}
-.feat-card p{font-size:.93rem;color:var(--t2);line-height:1.65}
+.feat-card h3{font-size:1rem;color:#fff;margin-bottom:8px}
+.feat-card p{font-size:.86rem;color:var(--t2);line-height:1.65}
 /* home latest */
 .hgrid2{display:grid;grid-template-columns:1fr 1fr;gap:40px}
 .ann-mini{padding:13px 0;border-bottom:1px solid var(--bdr)}
 .ann-mini:last-child{border-bottom:none}
-.ann-mini .t{font-size:.95rem;color:var(--t1);margin-bottom:4px;cursor:pointer;font-weight:500;transition:color .2s}
+.ann-mini .t{font-size:.88rem;color:var(--t1);margin-bottom:4px;cursor:pointer;font-weight:500;transition:color .2s}
 .ann-mini .t:hover{color:var(--acc)}
 .ann-mini .m{font-size:.76rem;color:var(--t3)}
 .blog-mini{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--bdr)}
 .blog-mini:last-child{border-bottom:none}
 .blog-mini .th{width:52px;height:52px;border-radius:8px;background:var(--sur2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
-.blog-mini .t{font-size:.94rem;color:var(--t1);margin-bottom:4px;cursor:pointer;font-weight:500;transition:color .2s}
+.blog-mini .t{font-size:.87rem;color:var(--t1);margin-bottom:4px;cursor:pointer;font-weight:500;transition:color .2s}
 .blog-mini .t:hover{color:var(--acc)}
 .blog-mini .m{font-size:.74rem;color:var(--t3)}
 /* CTA */
@@ -192,9 +192,9 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .tc-photo{height:195px;background:var(--sur2);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .tc-photo img{width:100%;height:100%;object-fit:cover}
 .tc-body{padding:18px}
-.tc-body h3{font-size:1.05rem;color:#fff;margin-bottom:3px}
+.tc-body h3{font-size:.97rem;color:#fff;margin-bottom:3px}
 .tc-role{font-size:.78rem;color:var(--acc);font-weight:600;margin-bottom:7px}
-.tc-bio{font-size:.87rem;color:var(--t2);line-height:1.58;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tc-bio{font-size:.8rem;color:var(--t2);line-height:1.58;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 /* ======== PROJECTS ======== */
 .proj-tabs{display:flex;gap:8px;margin-bottom:28px}
 .pt{padding:7px 18px;border-radius:100px;font-size:.85rem;font-weight:500;cursor:pointer;transition:var(--tr);background:var(--sur);border:1px solid var(--bdr);color:var(--t2)}
@@ -227,9 +227,9 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .bc-img img{width:100%;height:100%;object-fit:cover}
 .bc-body{padding:18px}
 .bc-cat{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-bottom:6px}
-.bc-body h3{font-size:1.04rem;color:#fff;margin-bottom:7px;line-height:1.38;cursor:pointer;transition:color .2s}
+.bc-body h3{font-size:.97rem;color:#fff;margin-bottom:7px;line-height:1.38;cursor:pointer;transition:color .2s}
 .bc-body h3:hover{color:var(--acc)}
-.bc-exc{font-size:.9rem;color:var(--t2);line-height:1.58;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.bc-exc{font-size:.82rem;color:var(--t2);line-height:1.58;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .bc-ft{display:flex;justify-content:space-between;font-size:.75rem;color:var(--t3)}
 /* blog detail overlay */
 #blog-ov{position:fixed;inset:0;z-index:9900;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;padding:20px}
@@ -245,9 +245,9 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .ann-card.important{border-left:4px solid var(--gold)}
 .ann-card.normal{border-left:4px solid var(--bdr)}
 .ann-card:hover{border-color:var(--bdr2)}
-.ann-card h3{font-size:1.04rem;color:#fff;margin-bottom:7px;cursor:pointer;transition:color .2s}
+.ann-card h3{font-size:.97rem;color:#fff;margin-bottom:7px;cursor:pointer;transition:color .2s}
 .ann-card h3:hover{color:var(--acc)}
-.ann-content{font-size:.93rem;color:var(--t2);line-height:1.65;margin-bottom:10px}
+.ann-content{font-size:.85rem;color:var(--t2);line-height:1.65;margin-bottom:10px}
 .ann-ft{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
 /* ======== GALLERY ======== */
 .gal-flt{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
@@ -285,8 +285,8 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .dc-room:hover{border-color:var(--acc);transform:translateY(-4px);box-shadow:0 8px 30px rgba(46,204,113,.14)}
 .dc-room:hover::after{opacity:1}
 .dc-room .ri{font-size:2.8rem;margin-bottom:14px}
-.dc-room h3{font-size:1.2rem;color:#fff;margin-bottom:7px}
-.dc-room p{font-size:.92rem;color:var(--t2);margin-bottom:18px;line-height:1.5}
+.dc-room h3{font-size:1.1rem;color:#fff;margin-bottom:7px}
+.dc-room p{font-size:.83rem;color:var(--t2);margin-bottom:18px;line-height:1.5}
 .room-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:var(--acc);color:#000;border-radius:8px;font-weight:700;font-size:.84rem;transition:var(--tr)}
 .dc-room:hover .room-btn{background:var(--acc3)}
 /* lobby */
@@ -664,8 +664,8 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
           <div class="lob-body">
             <div class="lob-info">📋 Contact admin to receive your classroom credentials.</div>
             <div id="lerr-classroom" class="lob-err hid"></div>
-            <div class="fg"><label>User ID</label><input id="cl-uid" placeholder="e.g. aira@classroom" autocomplete="username" onkeydown="if(event.key==='Enter')submitLobby('classroom')"/></div>
-            <div class="fg"><label style="display:flex;justify-content:space-between">Password <span onclick="togglePw('cl-pw',this)" style="cursor:pointer;color:var(--acc);font-size:.76rem">👁 Show</span></label><input type="password" id="cl-pw" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitLobby('classroom')"/></div>
+            <div class="fg"><label>User ID</label><input id="cl-uid" placeholder="e.g. aira@classroom" autocomplete="username"/></div>
+            <div class="fg"><label>Password</label><input type="password" id="cl-pw" placeholder="Your password" autocomplete="current-password"/></div>
             <button class="btn btn-p" style="width:100%" id="cl-btn" onclick="submitLobby('classroom')">Enter Classroom</button>
           </div>
         </div>
@@ -677,8 +677,8 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
           <div class="lob-body">
             <div class="lob-info">📋 Contact admin to receive your conference credentials.</div>
             <div id="lerr-conference" class="lob-err hid"></div>
-            <div class="fg"><label>User ID</label><input id="conf-uid" placeholder="e.g. aira@conference" autocomplete="username" onkeydown="if(event.key==='Enter')submitLobby('conference')"/></div>
-            <div class="fg"><label style="display:flex;justify-content:space-between">Password <span onclick="togglePw('conf-pw',this)" style="cursor:pointer;color:var(--acc);font-size:.76rem">👁 Show</span></label><input type="password" id="conf-pw" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitLobby('conference')"/></div>
+            <div class="fg"><label>User ID</label><input id="conf-uid" placeholder="e.g. aira@conference" autocomplete="username"/></div>
+            <div class="fg"><label>Password</label><input type="password" id="conf-pw" placeholder="Your password" autocomplete="current-password"/></div>
             <button class="btn btn-p" style="width:100%" id="conf-btn" onclick="submitLobby('conference')">Enter Conference</button>
           </div>
         </div>
@@ -690,8 +690,8 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
           <div class="lob-body">
             <div class="lob-info">📋 Contact admin to receive your recordings credentials.</div>
             <div id="lerr-recordings" class="lob-err hid"></div>
-            <div class="fg"><label>User ID</label><input id="rec-uid" placeholder="Your user ID" autocomplete="username" onkeydown="if(event.key==='Enter')submitLobby('recordings')"/></div>
-            <div class="fg"><label style="display:flex;justify-content:space-between">Password <span onclick="togglePw('rec-pw',this)" style="cursor:pointer;color:var(--acc);font-size:.76rem">👁 Show</span></label><input type="password" id="rec-pw" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitLobby('recordings')"/></div>
+            <div class="fg"><label>User ID</label><input id="rec-uid" placeholder="Your user ID" autocomplete="username"/></div>
+            <div class="fg"><label>Password</label><input type="password" id="rec-pw" placeholder="Your password" autocomplete="current-password"/></div>
             <button class="btn btn-p" style="width:100%" id="rec-btn" onclick="submitLobby('recordings')">Access Recordings</button>
           </div>
         </div>
@@ -825,7 +825,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
 <footer id="ft">
   <div class="ft-grid">
     <div class="ft-brand"><div class="logo"><div class="logo-mark">AI</div><div><div class="logo-name">AIRA</div><div class="logo-sub">Research Academy</div></div></div><p>Advancing research, technology, and innovation for sustainable development in Nepal and South Asia.</p></div>
-    <div class="ft-col"><h4>Organisation</h4><span class="fl" onclick="go('about')">About AIRA</span><span class="fl" onclick="go('team')">Our Team</span><span class="fl" onclick="go('projects')">Projects</span><span class="fl" onclick="go('services')">Services</span><span class="fl" onclick="openAdminLogin()" style="color:var(--acc);margin-top:8px;display:flex;align-items:center;gap:5px">🔐 Admin Panel</span></div>
+    <div class="ft-col"><h4>Organisation</h4><span class="fl" onclick="go('about')">About AIRA</span><span class="fl" onclick="go('team')">Our Team</span><span class="fl" onclick="go('projects')">Projects</span><span class="fl" onclick="go('services')">Services</span></div>
     <div class="ft-col"><h4>Resources</h4><span class="fl" onclick="go('blogs')">Blog</span><span class="fl" onclick="go('ann')">Announcements</span><span class="fl" onclick="go('gallery')">Gallery</span><span class="fl" onclick="go('contact')">Contact</span></div>
     <div class="ft-col"><h4>Digital Class</h4><span class="fl" onclick="openGateAndGo('classroom')">Classroom</span><span class="fl" onclick="openGateAndGo('conference')">Conference</span><span class="fl" onclick="openGateAndGo('recordings')">Recordings</span></div>
   </div>
@@ -893,13 +893,7 @@ async function api(path, opts={}) {
     const r = await fetch(API+path, {...opts, headers:{...h,...(opts.headers||{})}, signal:ctrl.signal});
     clearTimeout(t);
     const j = await r.json();
-    // For credential verify (401/403), return json with error message instead of throwing
-    if (!r.ok) {
-      const err = new Error(j.message || ('Error ' + r.status));
-      err.data = j;
-      err.status = r.status;
-      throw err;
-    }
+    if (!r.ok) throw new Error(j.message||`Error ${r.status}`);
     return j;
   } catch(err) { clearTimeout(t); throw err; }
 }
@@ -1094,60 +1088,27 @@ function backToRooms(){
 }
 async function submitLobby(type) {
   const pfx = type==='classroom'?'cl':type==='conference'?'conf':'rec';
-  const uidEl = $(`${pfx}-uid`);
-  const pwEl  = $(`${pfx}-pw`);
+  const uid = $(`${pfx}-uid`)?.value.trim();
+  const pw  = $(`${pfx}-pw`)?.value.trim();
   const errEl = $(`lerr-${type}`);
   const btn   = $(`${pfx}-btn`);
-
-  // Hide error first
   if(errEl){ errEl.classList.add('hid'); errEl.textContent=''; }
-
-  // Get values
-  const uid = uidEl ? uidEl.value.trim() : '';
-  const pw  = pwEl  ? pwEl.value.trim()  : '';
-
-  // Validate
-  if(!uid || !pw){
-    if(errEl){ errEl.textContent='⚠️ Please enter both User ID and Password.'; errEl.classList.remove('hid'); }
-    return;
-  }
-
-  // Disable button
-  if(btn){ btn.disabled=true; btn.textContent='Verifying...'; }
-
+  if(!uid||!pw){ if(errEl){errEl.textContent='Enter both User ID and Password.';errEl.classList.remove('hid');} return; }
+  btn.disabled=true; btn.textContent='Verifying...';
   try {
-    const res = await api('/credentials/verify', {
-      method: 'POST',
-      body: JSON.stringify({ type, userid: uid, password: pw })
-    });
-
-    if(res && res.success){
-      // ✅ Login success
-      S.dc[type] = true;
-      S.dcName[type] = res.name || uid;
-      toast('✅ Welcome, ' + (res.name || uid) + '!', 's');
-      if($('dc-gate')) $('dc-gate').classList.add('hid');
-      const lobEl = $('lob-' + type);
-      if(lobEl) lobEl.classList.add('hid');
+    const res = await api('/credentials/verify',{method:'POST',body:JSON.stringify({type,userid:uid,password:pw})});
+    if(res.success){
+      S.dc[type]=true; S.dcName[type]=res.name||uid;
+      toast(`Welcome, ${res.name||uid}! ✅`,'s');
+      $('dc-gate').classList.add('hid');
+      $(`lob-${type}`).classList.add('hid');
       showDCUI(type);
-    } else {
-      // API returned success:false
-      const msg = (res && res.message) ? res.message : 'Invalid credentials. Please try again.';
-      if(errEl){ errEl.textContent = '❌ ' + msg; errEl.classList.remove('hid'); }
     }
   } catch(err){
-    // Network or server error
-    const msg = err.message || 'Login failed. Check your connection.';
-    if(errEl){ errEl.textContent = '❌ ' + msg; errEl.classList.remove('hid'); }
-    console.error('submitLobby error:', err);
+    if(errEl){errEl.textContent=err.message||'Invalid credentials. Please try again.';errEl.classList.remove('hid');}
   }
-
-  // Re-enable button
-  if(btn){
-    btn.disabled = false;
-    btn.textContent = type==='classroom' ? 'Enter Classroom' :
-                      type==='conference' ? 'Enter Conference' : 'Access Recordings';
-  }
+  btn.disabled=false;
+  btn.textContent=type==='classroom'?'Enter Classroom':type==='conference'?'Enter Conference':'Access Recordings';
 }
 function showDCUI(type) {
   ['classroom','conference','recordings'].forEach(t=>{ const pfx2=t==='classroom'?'cl':t==='conference'?'conf':'rec'; $(`dc-${pfx2}-ui`).classList.add('hid'); });
@@ -1281,15 +1242,6 @@ async function checkTok(){
 function logout(){
   S.tok=null; S.isAdm=false; localStorage.removeItem('aira_tok');
   toast('Logged out','i'); go('home');
-}
-// Toggle password visibility
-function togglePw(inputId, btn){
-  const inp = $(inputId); if(!inp) return;
-  if(inp.type==='password'){
-    inp.type='text'; btn.textContent='🙈 Hide';
-  } else {
-    inp.type='password'; btn.textContent='👁 Show';
-  }
 }
 // ── ADMIN PANEL ───────────────────────────────
 function aTab(id){

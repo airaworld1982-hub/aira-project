@@ -2596,10 +2596,10 @@ function openSessionGate(type) {
   const infoEl = document.getElementById('gate-session-info');
   if(infoEl) {
     if(!creds.length) {
-      infoEl.textContent = '🔒 No active credentials configured. Contact the AIRA administrator to obtain access.';
-      infoEl.style.color = '#f08080';
-      infoEl.style.background = 'rgba(192,57,43,.1)';
-      infoEl.style.borderColor = 'rgba(192,57,43,.3)';
+      infoEl.textContent = '🔐 Enter your credentials to access this module.';
+      infoEl.style.color = 'var(--g4)';
+      infoEl.style.background = 'rgba(46,204,113,.08)';
+      infoEl.style.borderColor = 'rgba(46,204,113,.2)';
     } else {
       infoEl.textContent = isRec ? '🎬 Recordings: ' + (names || 'AIRA Session Archive') : (isClass ? '🖥️ Classroom: ' : '📹 Conference: ') + (names || ('AIRA ' + type));
       infoEl.style.color = '';

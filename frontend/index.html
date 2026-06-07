@@ -838,9 +838,9 @@ footer{background:#2D7A3A;border-top:3px solid #1f5828;padding:64px 60px 28px}
         <svg viewBox="0 0 20 20" fill="currentColor"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
       </button>
       <div class="drop">
-        <a href="#" onclick="go('digitalclass','classroom')"><span class="di">🖥️</span>Online Classroom</a>
-        <a href="#" onclick="go('digitalclass','conference')"><span class="di">📹</span>Video Conference</a>
-        <a href="#" onclick="go('digitalclass','recordings')"><span class="di">🎬</span>Recordings</a>
+        <a href="#" onclick="go('digitalclass');setTimeout(()=>openSessionGate('classroom'),500);return false;"><span class="di">🖥️</span>Online Classroom</a>
+        <a href="#" onclick="go('digitalclass');setTimeout(()=>openSessionGate('conference'),500);return false;"><span class="di">📹</span>Video Conference</a>
+        <a href="#" onclick="go('digitalclass');setTimeout(()=>openSessionGate('recordings'),500);return false;"><span class="di">🎬</span>Recordings</a>
       </div>
     </div>
     <!-- Announcements -->
@@ -930,9 +930,9 @@ footer{background:#2D7A3A;border-top:3px solid #1f5828;padding:64px 60px 28px}
       <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>
     </div>
     <div class="mnav-sub">
-      <a href="#" onclick="mgo('digitalclass','classroom')">Online Classroom</a>
-      <a href="#" onclick="mgo('digitalclass','conference')">Video Conference</a>
-      <a href="#" onclick="mgo('digitalclass','recordings')">Recordings</a>
+      <a href="#" onclick="go('digitalclass');setTimeout(()=>openSessionGate('classroom'),500);return false;">Online Classroom</a>
+      <a href="#" onclick="go('digitalclass');setTimeout(()=>openSessionGate('conference'),500);return false;">Video Conference</a>
+      <a href="#" onclick="go('digitalclass');setTimeout(()=>openSessionGate('recordings'),500);return false;">Recordings</a>
     </div>
   </div>
   <div class="mnav-item">

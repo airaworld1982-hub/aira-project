@@ -742,8 +742,29 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
       <div class="cl-ui">
         <!-- Header -->
         <div class="cl-hd">
-          <div><h2 style="color:#fff">🎓 Live Classroom</h2><p style="font-size:.8rem;color:var(--t3)" id="cl-uname"></p></div>
-          <button class="btn btn-g btn-sm" onclick="leaveSession('classroom')">← Exit Session</button>
+          <div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <h2 style="color:#fff;margin:0">🎓 Live Classroom</h2>
+              <!-- Live participant counter -->
+              <div id="participant-badge" style="display:none;align-items:center;gap:6px;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.3);border-radius:100px;padding:4px 12px">
+                <span style="width:7px;height:7px;border-radius:50%;background:var(--acc);display:inline-block;animation:pulse 2s infinite"></span>
+                <span style="font-size:.82rem;font-weight:700;color:var(--acc)" id="participant-count">1</span>
+                <span style="font-size:.78rem;color:var(--t2)" id="participant-label">online</span>
+              </div>
+            </div>
+            <p style="font-size:.8rem;color:var(--t3);margin-top:3px" id="cl-uname"></p>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-g btn-sm" onclick="toggleParticipantList()" id="btn-participants" style="display:none">👥 Members</button>
+            <button class="btn btn-g btn-sm" onclick="leaveSession('classroom')">← Exit Session</button>
+          </div>
+        </div>
+        <!-- Participant List Dropdown -->
+        <div id="participant-list" style="display:none;background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:14px;margin-bottom:14px">
+          <div style="font-size:.82rem;font-weight:700;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+            👥 Participants (<span id="p-count-detail">0</span>)
+          </div>
+          <div id="participant-items" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto"></div>
         </div>
         <!-- Camera Controls -->
         <div class="cc" id="call-ctrls">
@@ -1330,8 +1351,23 @@ function showDCUI(type) {
   if(type==='recordings'){ $('rec-uname').textContent='Logged in as: '+S.dcName.recordings; }
 }
 function leaveSession(type){ 
-  S.dc[type]=false; 
-  if(type==='classroom') stopScreenShare();
+  S.dc[type]=false;
+  if(type==='classroom'){
+    stopScreenShare();
+    // Announce leave to others
+    if(S.channel && S._myPusherID) {
+      try {
+        S.channel.trigger('client-leave', { id: S._myPusherID, name: S.dcName.classroom || 'Me' });
+      } catch(ex) {}
+    }
+    // Clear heartbeat
+    if(S._heartbeat) { clearInterval(S._heartbeat); S._heartbeat = null; }
+    // Clear participants
+    PARTICIPANTS.clear();
+    updateParticipantUI();
+    // Disconnect Pusher
+    if(S.pusher) { try { S.pusher.disconnect(); } catch(ex){} S.pusher = null; S.channel = null; }
+  }
   backToRooms(); 
   toast('Session ended.','i'); 
 }
@@ -1350,24 +1386,126 @@ function copyZoom(){
   navigator.clipboard.writeText(lk).then(()=>toast('Link copied!','s'));
 }
 // ── PUSHER / WebRTC ──────────────────────────
+// ── Participant tracking (local state) ────────────────────────
+const PARTICIPANTS = new Map(); // id → { name, joinedAt }
+
+function updateParticipantUI() {
+  const count = PARTICIPANTS.size;
+  const badge = $('participant-badge');
+  const cntEl = $('participant-count');
+  const lblEl = $('participant-label');
+  const btnEl = $('btn-participants');
+  const detEl = $('p-count-detail');
+
+  if(badge) badge.style.display = count > 0 ? 'flex' : 'none';
+  if(cntEl) cntEl.textContent = count;
+  if(lblEl) lblEl.textContent = count === 1 ? 'online' : 'online';
+  if(btnEl) btnEl.style.display = count > 0 ? 'inline-flex' : 'none';
+  if(detEl) detEl.textContent = count;
+
+  // Update participant list items
+  const listEl = $('participant-items');
+  if(listEl) {
+    if(count === 0) {
+      listEl.innerHTML = '<div style="font-size:.8rem;color:var(--t3)">No other participants yet.</div>';
+    } else {
+      listEl.innerHTML = [...PARTICIPANTS.values()].map(p => `
+        <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bdr)">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--acc);flex-shrink:0"></div>
+          <span style="font-size:.85rem;color:var(--t1);font-weight:500">${e(p.name)}</span>
+          <span style="font-size:.72rem;color:var(--t3);margin-left:auto">joined ${e(p.joinedAt)}</span>
+        </div>`).join('');
+    }
+  }
+}
+
+function toggleParticipantList() {
+  const el = $('participant-list');
+  if(!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function myJoinTime() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
 function initPusher(){
   if(S.pusher) return;
+
+  // Add self to participants immediately
+  const myName = S.dcName.classroom || 'Me';
+  const myId   = 'me_' + Date.now();
+  S._myPusherID = myId;
+  PARTICIPANTS.set(myId, { name: myName + ' (You)', joinedAt: myJoinTime() });
+  updateParticipantUI();
+
   try {
-    Pusher.logToConsole=false;
-    // Use regular public channel (no auth needed, no cloning issue)
-    S.pusher=new Pusher(PK,{cluster:PC});
-    // Use public channel instead of presence (presence requires server auth)
-    S.channel=S.pusher.subscribe('aira-classroom');
-    S.channel.bind('pusher:subscription_succeeded',()=>{
-      addChat('System','🟢 Connected to live classroom.');
+    Pusher.logToConsole = false;
+    S.pusher  = new Pusher(PK, { cluster: PC });
+
+    // Subscribe to public channel (no server auth needed)
+    S.channel = S.pusher.subscribe('aira-classroom');
+
+    S.channel.bind('pusher:subscription_succeeded', () => {
+      addChat('System', '🟢 Connected to live classroom.');
+      // Announce join to others
+      try {
+        S.channel.trigger('client-join', { id: myId, name: myName });
+      } catch(e) {}
     });
-    S.channel.bind('pusher:subscription_error',err=>{
-      addChat('System','⚠️ Real-time connection issue. Chat still works locally.');
+
+    S.channel.bind('pusher:subscription_error', () => {
+      addChat('System', '⚠️ Real-time limited. Using local mode.');
     });
-    S.channel.bind('chat-msg',d=>addChat(d.name||'User',d.msg||''));
+
+    // Someone sent a chat message
+    S.channel.bind('chat-msg', d => {
+      addChat(d.name || 'User', d.msg || '');
+    });
+
+    // Someone joined
+    S.channel.bind('client-join', d => {
+      if(d.id && d.id !== myId) {
+        PARTICIPANTS.set(d.id, { name: d.name || 'Student', joinedAt: myJoinTime() });
+        updateParticipantUI();
+        addChat('System', `👋 ${d.name || 'A student'} joined the classroom.`);
+        // Reply with our presence so they know we are here
+        try {
+          S.channel.trigger('client-here', { id: myId, name: myName });
+        } catch(e) {}
+      }
+    });
+
+    // Someone replied to our join announcement
+    S.channel.bind('client-here', d => {
+      if(d.id && d.id !== myId) {
+        if(!PARTICIPANTS.has(d.id)) {
+          PARTICIPANTS.set(d.id, { name: d.name || 'Student', joinedAt: myJoinTime() });
+          updateParticipantUI();
+        }
+      }
+    });
+
+    // Someone left
+    S.channel.bind('client-leave', d => {
+      if(d.id && PARTICIPANTS.has(d.id)) {
+        const name = PARTICIPANTS.get(d.id).name;
+        PARTICIPANTS.delete(d.id);
+        updateParticipantUI();
+        addChat('System', `👋 ${name} left the classroom.`);
+      }
+    });
+
+    // Heartbeat — ping every 30s so others know we are still here
+    S._heartbeat = setInterval(() => {
+      try {
+        S.channel.trigger('client-here', { id: myId, name: myName });
+      } catch(e) {}
+    }, 30000);
+
   } catch(err){
-    console.warn('Pusher init error:',err);
-    addChat('System','Chat ready (local mode).');
+    console.warn('Pusher error:', err);
+    addChat('System', 'Chat ready (local mode).');
   }
 }
 async function startCamera(){

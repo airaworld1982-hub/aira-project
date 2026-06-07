@@ -36,11 +36,19 @@ app.use((req, res, next) => {
     'https://airaworld.org',
     'https://www.airaworld.org',
     'http://localhost:3001',
+    'http://localhost:3000',
     'http://localhost:5500',
+    'http://localhost:5501',
+    'http://localhost:8080',
+    'http://127.0.0.1:3001',
     'http://127.0.0.1:5500',
+    'http://127.0.0.1:5501',
+    'http://127.0.0.1:8080',
   ];
   const origin = req.headers.origin;
-  if (!origin || allowedOrigins.includes(origin)) {
+  // In development allow all origins; in production restrict
+  const isDev = process.env.NODE_ENV !== 'production';
+  if (!origin || isDev || allowedOrigins.includes(origin)) {
     if (origin) res.setHeader('Access-Control-Allow-Origin', origin);
   } else {
     res.setHeader('Access-Control-Allow-Origin', 'https://www.airaworld.org');

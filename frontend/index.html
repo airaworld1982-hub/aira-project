@@ -857,8 +857,13 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
 <script>
 'use strict';
 // ── CONFIG ──────────────────────────────────
-const API = (window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1')
-  ? 'http://localhost:3001/api' : '/api';
+// ── API URL Auto-detect ─────────────────────────────────────
+// Local VSCode/Live Server → uses localhost:3001
+// Production VPS → uses same origin /api
+const _h = window.location.hostname;
+const _isLocal = (_h === 'localhost' || _h === '127.0.0.1' || _h === '' || window.location.protocol === 'file:');
+const API = _isLocal ? 'http://localhost:3001/api' : '/api';
+console.log('🌐 API:', API, '| Host:', _h);
 const PK = '8aae08c772b3016e4c6d', PC = 'ap2';
 
 // ── STATE ────────────────────────────────────

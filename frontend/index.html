@@ -290,7 +290,7 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .room-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:var(--acc);color:#000;border-radius:8px;font-weight:700;font-size:.84rem;transition:var(--tr)}
 .dc-room:hover .room-btn{background:var(--acc3)}
 /* lobby */
-.lobby-wrap{max-width:470px;margin:0 auto}
+.lobby-wrap{max-width:500px;margin:0 auto}
 .lob-card{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden}
 .lob-hd{background:linear-gradient(135deg,var(--bg2),var(--sur2));padding:26px;text-align:center;border-bottom:1px solid var(--bdr)}
 .lob-hd .li{font-size:2.8rem;margin-bottom:8px}
@@ -662,7 +662,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
         <div class="lob-card">
           <div class="lob-hd"><div class="li">🎓</div><h2>Classroom Access</h2><p>Enter your credentials to join the live session</p></div>
           <div class="lob-body">
-            <div class="lob-info">📋 Contact admin to receive your classroom credentials.</div>
+            <div class="lob-info">📋 Enter your <strong>User ID</strong> and <strong>Password</strong> provided by admin.<br><span style="opacity:.7;font-size:.75rem">Default: aira@classroom / class2025</span></div>
             <div id="lerr-classroom" class="lob-err hid"></div>
             <div class="fg"><label>User ID</label><input id="cl-uid" placeholder="e.g. aira@classroom" autocomplete="username" onkeydown="if(event.key==='Enter')submitLobby('classroom')"/></div>
             <div class="fg"><label style="display:flex;justify-content:space-between">Password <span onclick="togglePw('cl-pw',this)" style="cursor:pointer;color:var(--acc);font-size:.76rem">👁 Show</span></label><input type="password" id="cl-pw" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitLobby('classroom')"/></div>
@@ -675,7 +675,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
         <div class="lob-card">
           <div class="lob-hd"><div class="li">📹</div><h2>Conference Access</h2><p>Enter your credentials to access the conference room</p></div>
           <div class="lob-body">
-            <div class="lob-info">📋 Contact admin to receive your conference credentials.</div>
+            <div class="lob-info">📋 Enter your <strong>User ID</strong> and <strong>Password</strong> provided by admin.<br><span style="opacity:.7;font-size:.75rem">Default: aira@conference / conf2025</span></div>
             <div id="lerr-conference" class="lob-err hid"></div>
             <div class="fg"><label>User ID</label><input id="conf-uid" placeholder="e.g. aira@conference" autocomplete="username" onkeydown="if(event.key==='Enter')submitLobby('conference')"/></div>
             <div class="fg"><label style="display:flex;justify-content:space-between">Password <span onclick="togglePw('conf-pw',this)" style="cursor:pointer;color:var(--acc);font-size:.76rem">👁 Show</span></label><input type="password" id="conf-pw" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitLobby('conference')"/></div>
@@ -688,7 +688,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
         <div class="lob-card">
           <div class="lob-hd"><div class="li">🎬</div><h2>Recordings Access</h2><p>Enter your credentials to access recorded sessions</p></div>
           <div class="lob-body">
-            <div class="lob-info">📋 Contact admin to receive your recordings credentials.</div>
+            <div class="lob-info">📋 Enter your <strong>User ID</strong> and <strong>Password</strong> provided by admin.<br><span style="opacity:.7;font-size:.75rem">Default: student@aira / aira2025</span></div>
             <div id="lerr-recordings" class="lob-err hid"></div>
             <div class="fg"><label>User ID</label><input id="rec-uid" placeholder="Your user ID" autocomplete="username" onkeydown="if(event.key==='Enter')submitLobby('recordings')"/></div>
             <div class="fg"><label style="display:flex;justify-content:space-between">Password <span onclick="togglePw('rec-pw',this)" style="cursor:pointer;color:var(--acc);font-size:.76rem">👁 Show</span></label><input type="password" id="rec-pw" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitLobby('recordings')"/></div>
@@ -838,7 +838,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
     <div class="modal-body">
       <div id="adm-err" class="lob-err hid"></div>
       <div class="fg"><label>Username</label><input id="adm-u" placeholder="admin" autocomplete="username"/></div>
-      <div class="fg"><label>Password</label><input type="password" id="adm-p" placeholder="Your password" autocomplete="current-password"/></div>
+      <div class="fg"><label style="display:flex;justify-content:space-between;align-items:center">Password <span onclick="togglePw('adm-p',this)" style="cursor:pointer;color:var(--acc);font-size:.76rem;font-weight:600">👁 Show</span></label><input type="password" id="adm-p" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')adminLogin()"/></div>
       <button class="btn btn-p" style="width:100%" id="adm-login-btn" onclick="adminLogin()">Sign In</button>
     </div>
     <div class="modal-ft" style="justify-content:center"><button class="btn btn-g btn-sm" onclick="closeModal('mod-login')">Cancel</button></div>
@@ -887,13 +887,17 @@ const fd = d => d ? new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:
 async function api(path, opts={}) {
   const h = {'Content-Type':'application/json'};
   if (S.tok) h['Authorization'] = 'Bearer '+S.tok;
-  const ctrl = new AbortController();
-  const t = setTimeout(()=>ctrl.abort(), 30000);
+  // Build fetch options WITHOUT AbortSignal to avoid cloning error
+  const fetchOpts = {
+    method:  opts.method  || 'GET',
+    headers: { ...h, ...(opts.headers||{}) },
+  };
+  if (opts.body) fetchOpts.body = opts.body;
+  // Use Promise.race for timeout instead of AbortController
+  const timeout = new Promise((_,rej) => setTimeout(()=>rej(new Error('Request timed out')), 30000));
   try {
-    const r = await fetch(API+path, {...opts, headers:{...h,...(opts.headers||{})}, signal:ctrl.signal});
-    clearTimeout(t);
+    const r = await Promise.race([fetch(API+path, fetchOpts), timeout]);
     const j = await r.json();
-    // For credential verify (401/403), return json with error message instead of throwing
     if (!r.ok) {
       const err = new Error(j.message || ('Error ' + r.status));
       err.data = j;
@@ -901,7 +905,7 @@ async function api(path, opts={}) {
       throw err;
     }
     return j;
-  } catch(err) { clearTimeout(t); throw err; }
+  } catch(err) { throw err; }
 }
 
 function toast(msg, type='i', dur=3400) {
@@ -1129,17 +1133,24 @@ async function submitLobby(type) {
       if($('dc-gate')) $('dc-gate').classList.add('hid');
       const lobEl = $('lob-' + type);
       if(lobEl) lobEl.classList.add('hid');
+      // Clear input fields for security
+      if(uidEl) uidEl.value='';
+      if(pwEl)  pwEl.value='';
       showDCUI(type);
     } else {
-      // API returned success:false
+      // API returned success:false without throwing
       const msg = (res && res.message) ? res.message : 'Invalid credentials. Please try again.';
       if(errEl){ errEl.textContent = '❌ ' + msg; errEl.classList.remove('hid'); }
+      if(pwEl) pwEl.value=''; // clear password on failure
     }
   } catch(err){
-    // Network or server error
-    const msg = err.message || 'Login failed. Check your connection.';
+    // Network or server error - err.message comes from API 401/403 body
+    let msg = err.message || 'Login failed. Please try again.';
+    if(msg.includes('timed out')) msg = '⏱ Request timed out. Check your connection.';
+    if(msg.includes('Failed to fetch')) msg = '🌐 Cannot reach server. Check your internet.';
     if(errEl){ errEl.textContent = '❌ ' + msg; errEl.classList.remove('hid'); }
-    console.error('submitLobby error:', err);
+    if(pwEl) pwEl.value=''; // clear password on failure
+    console.error('submitLobby error:', type, err);
   }
 
   // Re-enable button
@@ -1179,13 +1190,21 @@ function initPusher(){
   if(S.pusher) return;
   try {
     Pusher.logToConsole=false;
+    // Use regular public channel (no auth needed, no cloning issue)
     S.pusher=new Pusher(PK,{cluster:PC});
-    S.channel=S.pusher.subscribe('presence-aira-classroom');
-    S.channel.bind('pusher:subscription_succeeded',()=>addChat('System','Connected to classroom.'));
-    S.channel.bind('pusher:member_added',m=>addChat('System',`${m.info?.name||'User'} joined.`));
-    S.channel.bind('pusher:member_removed',m=>addChat('System',`${m.info?.name||'User'} left.`));
-    S.channel.bind('client-chat',d=>addChat(d.name||'User',d.msg||''));
-  } catch(err){ addChat('System','Could not connect to live channel.'); }
+    // Use public channel instead of presence (presence requires server auth)
+    S.channel=S.pusher.subscribe('aira-classroom');
+    S.channel.bind('pusher:subscription_succeeded',()=>{
+      addChat('System','🟢 Connected to live classroom.');
+    });
+    S.channel.bind('pusher:subscription_error',err=>{
+      addChat('System','⚠️ Real-time connection issue. Chat still works locally.');
+    });
+    S.channel.bind('chat-msg',d=>addChat(d.name||'User',d.msg||''));
+  } catch(err){
+    console.warn('Pusher init error:',err);
+    addChat('System','Chat ready (local mode).');
+  }
 }
 async function startCamera(){
   try {
@@ -1241,7 +1260,7 @@ function endCall(){
 function sendChat(){
   const inp=$('chat-inp'); const msg=inp.value.trim(); if(!msg) return;
   addChat(S.dcName.classroom||'Me',msg);
-  try{ if(S.channel) S.channel.trigger('client-chat',{name:S.dcName.classroom||'Me',msg}); }catch(e){}
+  try{ if(S.channel) S.channel.trigger('chat-msg',{name:S.dcName.classroom||'Me',msg}); }catch(e){}
   inp.value='';
 }
 function addChat(name,msg){
@@ -1275,8 +1294,14 @@ async function adminLogin(){
 }
 async function checkTok(){
   if(!S.tok) return;
-  try{ await api('/auth/me'); S.isAdm=true; }
-  catch(e){ S.tok=null; S.isAdm=false; localStorage.removeItem('aira_tok'); }
+  try{
+    await api('/auth/me');
+    S.isAdm=true;
+  } catch(e){
+    // Token expired or invalid - clear silently
+    S.tok=null; S.isAdm=false;
+    localStorage.removeItem('aira_tok');
+  }
 }
 function logout(){
   S.tok=null; S.isAdm=false; localStorage.removeItem('aira_tok');

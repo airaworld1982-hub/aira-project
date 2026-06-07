@@ -23,7 +23,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--t1);font-family:var(--ff2);font-size:15px;line-height:1.6;overflow-x:hidden;padding-top:100px}
+body{background:var(--bg);color:var(--t1);font-family:var(--ff2);font-size:15px;line-height:1.6;overflow-x:hidden;padding-top:106px}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 button{cursor:pointer;font-family:var(--ff2);border:none;outline:none}
@@ -60,7 +60,7 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .btn-sm{padding:5px 12px;font-size:.8rem}
 .btn-lg{padding:12px 28px;font-size:1rem}
 /* layout */
-.page{display:none;min-height:calc(100vh - 100px);animation:fadeUp .3s ease}
+.page{display:none;min-height:calc(100vh - 106px);animation:fadeUp .3s ease}
 .page.active{display:block}
 .con{max-width:1280px;margin:0 auto;padding:0 24px}
 .sec{padding:72px 0}
@@ -77,12 +77,12 @@ h1,h2,h3,h4,h5{font-family:var(--ff1);font-weight:700;line-height:1.2}
 .tick-label{background:var(--bg);color:var(--acc);padding:0 14px;margin-right:20px;font-family:var(--ff1);font-size:.7rem;letter-spacing:.12em;font-weight:700;flex-shrink:0;height:30px;display:flex;align-items:center}
 .tick-text{font-size:.78rem;font-weight:600;color:var(--bg)}
 /* navbar */
-#nav{position:fixed;top:30px;left:0;right:0;z-index:1000;background:rgba(4,16,10,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);height:70px}
-.nav-in{max-width:100%;margin:0 auto;display:flex;align-items:center;height:100%;padding:0 36px;gap:10px}
+#nav{position:fixed;top:30px;left:0;right:0;z-index:1000;background:rgba(4,16,10,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);height:76px}
+.nav-in{max-width:100%;margin:0 auto;display:flex;align-items:center;height:100%;padding:0 40px;gap:14px}
 .logo{display:flex;align-items:center;gap:10px;margin-right:12px;cursor:pointer;flex-shrink:0}
-.logo-mark{width:48px;height:48px;background:linear-gradient(135deg,var(--acc2),var(--acc3));border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:var(--ff1);font-weight:800;font-size:1.1rem;color:#000;flex-shrink:0}
-.logo-name{font-family:var(--ff1);font-weight:800;font-size:1.35rem;color:#fff;letter-spacing:.04em}
-.logo-sub{font-size:.72rem;color:var(--t3);letter-spacing:.06em;text-transform:uppercase}
+.logo-mark{width:52px;height:52px;background:linear-gradient(135deg,var(--acc2),var(--acc3));border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--ff1);font-weight:800;font-size:1.15rem;color:#000;flex-shrink:0}
+.logo-name{font-family:var(--ff1);font-weight:800;font-size:1.4rem;color:#fff;letter-spacing:.04em;line-height:1.1}
+.logo-sub{font-size:.76rem;color:var(--acc3);letter-spacing:.04em;text-transform:uppercase;font-weight:500;white-space:nowrap}
 .nav-links{display:flex;align-items:center;gap:4px;flex:1}
 .nl{padding:9px 16px;border-radius:9px;font-size:1rem;font-weight:600;color:var(--t2);transition:var(--tr);cursor:pointer;white-space:nowrap}
 .nl:hover,.nl.act{color:var(--acc);background:rgba(46,204,113,.08)}
@@ -433,7 +433,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
   <div class="nav-in">
     <div class="logo" onclick="go('home')">
       <div class="logo-mark">AI</div>
-      <div><div class="logo-name">AIRA</div><div class="logo-sub">Research Academy</div></div>
+      <div><div class="logo-name">AIRA</div><div class="logo-sub">Axon Infotech Research Academy</div></div>
     </div>
     <div class="nav-links">
       <span class="nl" onclick="go('home')">Home</span>
@@ -462,7 +462,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
 <!-- MOBILE NAV -->
 <div id="mnav">
   <div class="mnav-hd">
-    <div class="logo"><div class="logo-mark">AI</div><div><div class="logo-name">AIRA</div><div class="logo-sub">Research Academy</div></div></div>
+    <div class="logo"><div class="logo-mark">AI</div><div><div class="logo-name">AIRA</div><div class="logo-sub">Axon Infotech Research Academy</div></div></div>
     <div class="mnav-close" onclick="toggleMnav()">✕</div>
   </div>
   <div class="ml" onclick="goM('home')">🏠 Home</div>
@@ -821,7 +821,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:44px 24px 2
 <!-- FOOTER -->
 <footer id="ft">
   <div class="ft-grid">
-    <div class="ft-brand"><div class="logo"><div class="logo-mark">AI</div><div><div class="logo-name">AIRA</div><div class="logo-sub">Research Academy</div></div></div><p>Advancing research, technology, and innovation for sustainable development in Nepal and South Asia.</p></div>
+    <div class="ft-brand"><div class="logo"><div class="logo-mark">AI</div><div><div class="logo-name">AIRA</div><div class="logo-sub">Axon Infotech Research Academy</div></div></div><p>Advancing research, technology, and innovation for sustainable development in Nepal and South Asia.</p></div>
     <div class="ft-col"><h4>Organisation</h4><span class="fl" onclick="go('about')">About AIRA</span><span class="fl" onclick="go('team')">Our Team</span><span class="fl" onclick="go('projects')">Projects</span><span class="fl" onclick="go('services')">Services</span><span class="fl" onclick="openAdminLogin()" style="color:var(--acc);margin-top:8px;display:flex;align-items:center;gap:5px">🔐 Admin Panel</span></div>
     <div class="ft-col"><h4>Resources</h4><span class="fl" onclick="go('blogs')">Blog</span><span class="fl" onclick="go('ann')">Announcements</span><span class="fl" onclick="go('gallery')">Gallery</span><span class="fl" onclick="go('contact')">Contact</span></div>
     <div class="ft-col"><h4>Digital Class</h4><span class="fl" onclick="openGateAndGo('classroom')">Classroom</span><span class="fl" onclick="openGateAndGo('conference')">Conference</span><span class="fl" onclick="openGateAndGo('recordings')">Recordings</span></div>

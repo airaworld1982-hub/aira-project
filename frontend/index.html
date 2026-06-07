@@ -2073,7 +2073,7 @@ function go(page, sub) {
   if(page === 'digitalclass' && sub === 'conference') { const a=sessionStorage.getItem('aira_authed_conference'); if(!a) setTimeout(()=>openSessionGate('conference'),300); }
   if(page === 'digitalclass' && sub === 'recordings') {
     const authed = sessionStorage.getItem('aira_authed_recordings');
-    if(!authed) setTimeout(() => openSessionGate('recordings'), 600);
+    if(!authed && !window.adminLoggedIn) setTimeout(() => openSessionGate('recordings'), 600);
     else {
       setTimeout(() => {
         const recBtn = Array.from(document.querySelectorAll('#p-digitalclass .tab-btn')).find(b=>b.textContent.toLowerCase().includes('recording'));

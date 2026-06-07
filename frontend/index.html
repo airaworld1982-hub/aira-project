@@ -1354,11 +1354,12 @@ function leaveSession(type){
   S.dc[type]=false;
   if(type==='classroom'){
     stopScreenShare();
-    // Announce leave to others
-    if(S.channel && S._myPusherID) {
-      try {
-        S.channel.trigger('client-leave', { id: S._myPusherID, name: S.dcName.classroom || 'Me' });
-      } catch(ex) {}
+    // Announce leave via backend API
+    if(S._myPusherID) {
+      api('/signal/leave', {
+        method: 'POST',
+        body: JSON.stringify({ channel:'aira-classroom', id: S._myPusherID, name: S.dcName.classroom||'Me' })
+      }).catch(()=>{});
     }
     // Clear heartbeat
     if(S._heartbeat) { clearInterval(S._heartbeat); S._heartbeat = null; }
@@ -1448,10 +1449,11 @@ function initPusher(){
 
     S.channel.bind('pusher:subscription_succeeded', () => {
       addChat('System', '🟢 Connected to live classroom.');
-      // Announce join to others
-      try {
-        S.channel.trigger('client-join', { id: myId, name: myName });
-      } catch(e) {}
+      // Announce join via backend API
+      api('/signal/join', {
+        method: 'POST',
+        body: JSON.stringify({ channel:'aira-classroom', id: myId, name: myName })
+      }).catch(()=>{});
     });
 
     S.channel.bind('pusher:subscription_error', () => {
@@ -1469,10 +1471,11 @@ function initPusher(){
         PARTICIPANTS.set(d.id, { name: d.name || 'Student', joinedAt: myJoinTime() });
         updateParticipantUI();
         addChat('System', `👋 ${d.name || 'A student'} joined the classroom.`);
-        // Reply with our presence so they know we are here
-        try {
-          S.channel.trigger('client-here', { id: myId, name: myName });
-        } catch(e) {}
+        // Reply with our presence via backend API
+        api('/signal/here', {
+          method: 'POST',
+          body: JSON.stringify({ channel:'aira-classroom', id: myId, name: myName })
+        }).catch(()=>{});
       }
     });
 
@@ -1496,11 +1499,12 @@ function initPusher(){
       }
     });
 
-    // Heartbeat — ping every 30s so others know we are still here
+    // Heartbeat — ping every 30s via backend API
     S._heartbeat = setInterval(() => {
-      try {
-        S.channel.trigger('client-here', { id: myId, name: myName });
-      } catch(e) {}
+      api('/signal/here', {
+        method: 'POST',
+        body: JSON.stringify({ channel:'aira-classroom', id: myId, name: myName })
+      }).catch(()=>{});
     }, 30000);
 
   } catch(err){
@@ -1563,7 +1567,11 @@ function endCall(){
 function sendChat(){
   const inp=$('chat-inp'); const msg=inp.value.trim(); if(!msg) return;
   addChat(S.dcName.classroom||'Me',msg);
-  try{ if(S.channel) S.channel.trigger('chat-msg',{name:S.dcName.classroom||'Me',msg}); }catch(e){}
+  // Send via backend API (works on free Pusher plan)
+  api('/signal/chat', {
+    method: 'POST',
+    body: JSON.stringify({ channel:'aira-classroom', name: S.dcName.classroom||'Me', msg })
+  }).catch(()=>{});
   inp.value='';
 }
 function addChat(name,msg){
